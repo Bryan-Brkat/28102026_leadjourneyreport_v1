@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OutPerform · Lead Journey Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F4F8; --ink:#16162A; --ink2:#34334F; --muted:#55546E; --muted2:#8A89A3;
+  --line:#E4E3EE; --line2:#EEEDF4; --field:#D6D5E4; --head:#F8F8FB;
+  --pri:#4B3FD0; --pri-d:#3B30B8; --pri-dd:#2A2190; --pri-l:#E9E7FB; --pri-ll:#F5F4FE;
+  --seg:#E9E8F1; --chip:#EEEDF4; --nav:#16152B;
+  --mkt-bg:#EEF3FF; --mkt:#1E3A8A; --sales-bg:#F1F0F6;
+  --warn-bg:#FFF7F0; --warn-bd:#F3C9A6; --warn:#9A3412;
+  --good:#15803D; --bad:#B91C1C;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:var(--pri-d)} a:hover{color:var(--pri-dd)}
+button,select,input{font-family:inherit}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+.app{display:flex;min-height:100vh;min-width:1280px}
+.sidenav{width:72px;flex-shrink:0;background:var(--nav);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:8px;position:sticky;top:0;height:100vh}
+.logo{width:40px;height:40px;border-radius:10px;background:var(--pri);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.navbtn{width:48px;height:48px;border:0;border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.navbtn.on{background:#2C2A4D}
+.col{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:64px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.crumbs{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--ink)} .brand b{color:var(--pri)}
+.vsep{width:1px;height:20px;background:var(--line)}
+.crumbs .cur{font-weight:600;color:var(--ink)}
+.top-r{display:flex;align-items:center;gap:12px}
+.hqbtn{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.iconbtn{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.avatar{width:40px;height:40px;border-radius:20px;background:var(--pri-l);color:var(--pri-dd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+
+main{padding:24px 32px 40px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.pagehead h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.pagehead p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.sync{font-size:12px;color:var(--muted)}
+.btn-pri{height:44px;padding:0 18px;border:0;border-radius:10px;background:var(--pri);display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#fff;cursor:pointer}
+.btn-pri:hover{background:var(--pri-d)}
+.btn-sec{height:44px;padding:0 18px;border:1px solid var(--field);border-radius:10px;background:#fff;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.btn-sm{height:32px;padding:0 10px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-link{height:40px;padding:0 12px;border:0;background:transparent;font-size:13px;font-weight:600;color:var(--pri-d);cursor:pointer}
+
+.toolbar{display:flex;align-items:center;justify-content:flex-start;gap:16px 32px;flex-wrap:wrap}
+.toggles{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.tgl{display:flex;align-items:center;gap:10px}
+.lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.seg{display:flex;gap:4px;padding:4px;background:var(--seg);border-radius:12px}
+.seg button,.seg a{height:36px;padding:0 16px;border:0;border-radius:9px;background:transparent;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;text-decoration:none;white-space:nowrap}
+.seg .on{background:#fff;color:var(--ink);font-weight:700}
+.seg.sm{padding:3px;border-radius:10px}
+.seg.sm button{height:30px;padding:0 12px;font-size:12px;border-radius:8px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:14px}
+.filters{padding:14px 16px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.filters select,.filters input{height:40px;padding:0 10px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0}
+.filters input[type=search]{width:220px}
+.grow{flex-grow:1}
+
+.sec{overflow:visible}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;min-height:60px}
+.sec.open > .sec-head{border-bottom:1px solid var(--line2)}
+.sec-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.sec-title h2{margin:0;font-size:16px;font-weight:700}
+.sub{font-size:12px;color:var(--muted)}
+.sec-ctrl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.min-btn{width:28px;height:28px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+.sec:not(.open) .min-btn svg{transform:rotate(-90deg)}
+.sec-body{padding:20px}
+.sec-body.flush{padding:0}
+.foot{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:14px}
+.foot b{color:var(--ink2)}
+
+.chip{display:inline-block;padding:2px 7px;border-radius:5px;background:var(--chip);color:var(--ink2);font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500;white-space:nowrap}
+.chip.lg{font-size:13px;padding:3px 8px;color:var(--ink)}
+.pend{display:inline-block;padding:3px 8px;border:1px dashed var(--muted2);border-radius:6px;font-size:11.5px;color:var(--muted);white-space:nowrap}
+.drop{display:inline-block;padding:3px 8px;border:1px solid var(--warn-bd);background:var(--warn-bg);border-radius:6px;font-size:11.5px;color:var(--warn);font-weight:600;white-space:nowrap}
+.i{display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid var(--muted2);color:var(--muted2);font-size:9px;font-weight:700;font-style:normal;align-items:center;justify-content:center;margin-left:5px;vertical-align:1px;flex-shrink:0}
+[data-tip]{cursor:help}
+#tip{position:fixed;z-index:1000;max-width:320px;background:var(--nav);color:#fff;font-size:12px;line-height:1.5;padding:8px 11px;border-radius:8px;white-space:pre-line;pointer-events:none;display:none;box-shadow:0 8px 24px rgba(22,21,43,.25)}
+.dl{font-size:11px;font-weight:700;white-space:nowrap}
+.good{color:var(--good)} .bad{color:var(--bad)} .neu{color:var(--muted)}
+.grp-chip{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700}
+
+/* Compact tables */
+.tbl.cmp th{padding:7px 8px;font-size:10.5px;white-space:normal;min-width:64px;max-width:120px;line-height:1.3}
+.tbl.cmp th:first-child{max-width:none}
+.tbl.cmp thead tr.grow-r th{padding:6px 4px 0}
+.tbl.cmp td{padding:6px 8px;font-size:12.5px;vertical-align:middle;white-space:nowrap}
+.tbl.cmp tr.total td{padding-top:7px;padding-bottom:7px}
+.c2{display:flex;flex-direction:column;gap:1px;line-height:1.3;min-width:0}
+.c2 b{font-weight:700;font-size:12.5px}
+.ts1{font-size:12px;color:var(--muted)} .ts1 b{color:var(--ink);font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11.5px}
+.ts2{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.ts2.num{font-size:10.5px}
+.chip.xs{font-size:10.5px;padding:0 5px;border-radius:4px}
+.av.sm{width:22px;height:22px;border-radius:11px;font-size:9.5px}
+.who{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600}
+.caret{width:18px;display:flex;justify-content:center}
+.ljt .pend,.ljt .drop,.cmp .pend,.cmp .drop{padding:1px 6px;font-size:10.5px}
+.ljt th .hc{align-items:center}
+.cmp .repbtn{min-height:0;gap:8px}
+.cmp .val{font-size:11.5px}
+/* Speed-to-Lead single-line table */
+.th2{display:flex;align-items:center;justify-content:center;gap:4px;height:100%;min-height:38px;text-align:center}
+.th2 .i{flex:none;margin:0}
+.spd .gl{border-left:1px solid var(--line2)}
+.spd .dl{font-size:10px;letter-spacing:-.03em}
+/* Stage cards grouped by Before / After AI qualifies */
+.cgroups{display:flex;gap:10px;overflow-x:auto;padding-bottom:2px}
+.cgbox{border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cghead{display:flex;align-items:center;padding:0 2px}
+.cgroups .cards{overflow:visible}
+.scard .dl{font-size:11px}
+/* Multi-select dropdowns */
+.msw{position:relative}
+.sfilters .msel{height:34px;font-size:12.5px;padding:0 8px;border-radius:8px}
+.msw .mspanel{top:calc(100% + 4px);width:auto;min-width:100%;max-width:300px;white-space:nowrap}
+.mspanel label.msall{font-weight:700;border-bottom:1px solid var(--line2);border-radius:6px 6px 0 0;margin-bottom:4px;padding-bottom:8px}
+.mspanel label.msf{padding-left:6px}
+.chip.now{background:#FFF4E5;color:#8A4B00}
+.avgrow td{background:#FAFAFD;border-bottom:1px solid var(--line)!important;padding-top:5px!important;padding-bottom:5px!important;font-size:12px}
+.bub .l1{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+.bub .l1 .dl{font-size:9.5px;letter-spacing:-.03em;font-weight:600}
+.bub .ts2 .val{font-size:10.5px}
+.tbl.cmp.bub td,.tbl.cmp.bub th{padding-left:5px;padding-right:5px}
+.bub .l1{gap:4px}
+/* Section filter strip */
+.sfilters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px;padding:10px 20px;background:var(--head);border-bottom:1px solid var(--line2)}
+.fl{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fll{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;white-space:nowrap}
+.sfilters select,.sfilters input{height:34px;padding:0 8px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:12.5px;color:var(--ink)}
+.sfilters input[type=search]{width:190px}
+.sfilters .seg.sm{background:var(--seg)}
+.sfilters .seg.sm button{height:28px}
+.sfilters .btn-link{height:34px}
+/* Export dialog filters + stage multi-select */
+.xgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.xgrid select,.xgrid input{width:100%;height:40px;padding:0 10px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:13px;color:var(--ink)}
+.msel-wrap{position:relative}
+.msel{width:100%;height:40px;padding:0 10px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:13px;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;text-align:left}
+.msel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msel.empty-sel{border-color:var(--bad);color:var(--bad)}
+.mspanel{position:absolute;left:0;top:44px;z-index:120;width:300px;max-height:340px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(22,21,43,.18);padding:8px}
+.mspanel label{display:flex;align-items:center;gap:8px;padding:6px;border-radius:6px;font-size:13px;cursor:pointer;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:500}
+.mspanel label:hover{background:var(--head)}
+.mspanel label.msg{font-weight:700;font-size:12px;color:var(--ink2);margin-top:4px}
+.mspanel label.msi{padding-left:28px}
+.mspanel input{accent-color:var(--pri);width:15px;height:15px;margin:0}
+/* Section 1: funnel chart */
+.fwrap{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
+.mxwrap{border-top:1px solid var(--line2);padding-top:18px}
+.mx td b{display:block;font-weight:600}
+.mx td .mxn{display:block;font-size:9.5px;opacity:.8;margin-top:1px}
+.mx tr.mxcount td{background:var(--head);font-weight:700;color:var(--ink)}
+.mx tr.mxcount th{font-weight:700;color:var(--ink)}
+.fcap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.fgrp{margin:14px 0 4px;display:flex;align-items:center;gap:6px}
+.fgrp:first-of-type{margin-top:0}
+.frow{display:grid;grid-template-columns:170px minmax(0,1fr) 300px;align-items:center;gap:12px;min-height:44px;border-bottom:1px solid var(--line2)}
+.flab{display:flex;flex-direction:column;gap:1px}
+.snum{font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.sname{font-size:13px;font-weight:700;display:inline-flex;align-items:center}
+.ftrack{display:flex;align-items:center;gap:10px}
+.fbarbox{flex:1;height:28px;background:var(--head);border-radius:7px;overflow:hidden}
+.fbar{height:100%;border-radius:7px}
+.fval{width:64px;font-size:16px;font-weight:800;text-align:right}
+.fmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.fmeta > span{white-space:nowrap}
+.fmoney{font-size:12px;font-weight:700;color:var(--pri-dd)}
+.mx{width:100%;border-collapse:collapse;font-size:11.5px;table-layout:fixed}
+.mx th,.mx td{border:1px solid var(--line2);padding:7px 1px;text-align:center}
+.mx thead th{font-size:10.5px;font-weight:700;color:var(--muted);background:var(--head)}
+.mx th.rl{text-align:left;font-size:11px;font-weight:600;color:var(--ink2);background:var(--head);padding-left:8px;width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mx th.corner{width:170px;font-size:10px;text-align:left;padding-left:8px}
+.mx td{font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-variant-numeric:tabular-nums}
+.mx td.eq{color:var(--muted)}
+.mx td.na{background:repeating-linear-gradient(135deg,#F4F4F8 0,#F4F4F8 1px,transparent 1px,transparent 7px)}
+
+/* Section 1: stage cards */
+.cards{display:grid;gap:8px;overflow-x:auto;padding-bottom:2px}
+.scard{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;min-width:102px}
+.scard .top .snum{letter-spacing:.03em}
+.scard.mh{border-color:var(--pri);background:var(--pri-ll)}
+.scard .top{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:nowrap;white-space:nowrap;min-width:0}
+.scard .top .snum{flex-shrink:0}
+
+.cgrp{display:flex;align-items:center;gap:8px;padding:0 2px 2px}
+.cgrp .cline{flex:1;height:1px;opacity:.2}
+.scard .own{font-size:10.5px;font-weight:700;color:var(--pri-d);min-width:0;overflow:hidden;text-overflow:ellipsis}
+.scard .nm{font-size:13.5px;font-weight:700;line-height:1.25;min-height:34px}
+.scard .big{font-size:21px;font-weight:800;letter-spacing:-.02em}
+.scard .hr{height:1px;background:var(--line2);margin:2px 0}
+.scard .row{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12px;color:var(--muted)}
+
+/* Section 2 chart */
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:8px}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+.swl{width:14px;height:3px;border-radius:2px;display:inline-block}
+.sel-inline{height:34px;padding:0 8px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:12.5px;color:var(--ink)}
+svg text{font-family:'Plus Jakarta Sans',sans-serif}
+
+/* Tables */
+.tscroll{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:10px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.35;background:var(--head);text-align:left;vertical-align:bottom;white-space:nowrap}
+.tbl td{padding:12px 10px;border-top:1px solid var(--line2);vertical-align:top;font-size:13px}
+.tbl tr.total td{background:var(--head);border-top:2px solid var(--line);font-weight:700}
+.tbl th.ghead{padding:5px 10px;border-radius:6px 6px 0 0;font-size:11px;text-transform:none;letter-spacing:0;background:transparent}
+.tbl thead tr.grow-r th{background:#fff;padding:8px 4px 0}
+.tbl thead tr.grow-r th > div{padding:5px 10px;border-radius:6px 6px 0 0;font-size:11px;font-weight:700;text-transform:none;letter-spacing:0}
+.c{text-align:center}
+.num{font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+.sp7 th{text-align:center;padding:8px 6px}
+.sp7 td{text-align:center;padding:9px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap;vertical-align:middle}
+.sp7 td.nm{text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;padding-left:20px}
+.sp7 td.ix{color:var(--muted2);font-size:11px;width:28px}
+.sp7 .gl{border-left:1px solid var(--line)}
+.stack{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.mut{font-size:11.5px;color:var(--muted)}
+.big16{font-size:16px;font-weight:800}
+.val{font-size:12.5px;font-weight:700;color:var(--pri-dd)}
+.av{width:26px;height:26px;flex-shrink:0;border-radius:13px;background:var(--pri-l);color:var(--pri-dd);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.av.lg{width:34px;height:34px;border-radius:17px;font-size:12px}
+.tagbu{display:inline-block;padding:3px 8px;border-radius:6px;background:var(--sales-bg);font-size:12px;font-weight:600;color:var(--ink2);margin:0 4px 4px 0}
+.mhlink{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--pri-d)}
+.lock{display:inline-flex;align-items:center;gap:4px}
+.pager{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--line2)}
+.pager .pg{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.pgbtn{width:36px;height:36px;border:1px solid var(--field);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pgbtn:disabled{opacity:.4;cursor:default}
+
+/* lead table */
+.ljt th.fz,.ljt td.fz{position:sticky;z-index:2;background:#fff;overflow:hidden;white-space:normal}
+.ljt th.fz{background:var(--head);z-index:3}
+.ljt thead tr.grow-r th.fz{background:#fff}
+.ljt tr.avgrow td.fz{background:#FAFAFD}
+.ljt .fzl{box-shadow:inset -1px 0 0 var(--line)}
+.ljt td.fz:first-child,.ljt th.fz:first-child{padding-left:14px}
+.tbl.cmp.ljt th{padding:6px 5px;min-width:0}
+.tbl.cmp.ljt td{padding:5px 5px}
+.ljt .who{font-size:12px}
+.ljt .ts1{font-size:11.5px;color:var(--ink)}
+.ljt td:last-child .ts2{white-space:normal;max-width:96px}
+.ljt th .hide-btn{width:16px;height:16px}
+.ljt th{font-size:10px!important}
+.ljt th .hc{display:flex;align-items:flex-start;justify-content:space-between;gap:4px}
+.hide-btn{width:20px;height:20px;flex-shrink:0;border:0;border-radius:5px;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.55}
+.hide-btn:hover{opacity:1;background:var(--seg)}
+.ljt td.st{min-width:0}
+.colpanel-wrap{position:relative}
+.colpanel{position:absolute;right:0;top:38px;z-index:40;width:250px;max-height:420px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(22,21,43,.18);padding:10px}
+.colpanel label{display:flex;align-items:center;gap:8px;padding:6px 6px;border-radius:6px;font-size:13px;cursor:pointer}
+.colpanel label:hover{background:var(--head)}
+.colpanel input{accent-color:var(--pri);width:15px;height:15px}
+.colpanel .cp-h{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 8px;border-bottom:1px solid var(--line2);margin-bottom:6px}
+
+/* rep table */
+.repbtn{width:100%;min-height:44px;border:0;background:transparent;padding:0;display:flex;align-items:center;gap:10px;color:var(--ink);text-align:left;cursor:pointer}
+tr.sel td{background:var(--pri-ll)}
+tr.sub td{background:#fff}
+.hl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.hlc{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.hlc.warn{background:var(--warn-bg);border-color:var(--warn-bd)}
+.hlc .r{display:flex;align-items:center;gap:10px}
+.hlc .v{margin-left:auto;font-size:18px;font-weight:800}
+
+/* modal + toast */
+.overlay{position:fixed;inset:0;background:rgba(22,21,43,.38);z-index:90;display:none}
+.modal{position:fixed;top:120px;right:32px;width:680px;max-width:calc(100vw - 40px);background:#fff;border-radius:16px;box-shadow:0 20px 48px rgba(22,21,43,.28);z-index:100;display:none;flex-direction:column}
+.modal.on,.overlay.on{display:flex}
+.overlay.on{display:block}
+.mh-h{padding:18px 24px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line2)}
+.mh-h h2{margin:0;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.mbody{padding:18px 24px;display:flex;flex-direction:column;gap:18px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--field);border-radius:10px;font-size:13px;cursor:pointer}
+.opt input{width:16px;height:16px;margin-top:2px;accent-color:var(--pri)}
+.opt.on{border-color:var(--pri);background:var(--pri-ll)}
+.mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mgrid label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mgrid select{height:40px;padding:0 10px;border:1px solid var(--field);border-radius:8px;background:#fff;font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0}
+.mask{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--head);border-radius:8px;font-size:13px}
+.mask input{accent-color:var(--pri);width:16px;height:16px;margin-top:2px}
+.prev{overflow-x:auto;background:var(--nav);border-radius:8px;padding:10px 12px}
+.prev pre{margin:0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.6;color:#D9D8F0;white-space:pre}
+.mfoot{padding:14px 24px;border-top:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#FCFCFD;border-radius:0 0 16px 16px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--nav);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;z-index:200;display:none}
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+
+/* Report-ready tables (Speed-to-Lead, BU breakdown): one font, tabular numbers, even spacing */
+.rcap{display:flex;flex-wrap:wrap;gap:6px 22px;padding:12px 20px;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--line2)}
+.rcap b{font-weight:700;color:var(--ink)}
+.bub2{table-layout:fixed;width:100%}
+.bub2 th{padding:8px 6px;font-size:10px;line-height:1.3;white-space:normal;vertical-align:bottom;text-align:left}
+.bub2 thead tr.grow-r th{padding:8px 3px 0}
+.bub2 th.bnm,.bub2 td.bnm{width:150px;padding-left:20px}
+.bub2 th.bcy,.bub2 td.bcy{width:104px;padding-right:16px}
+.bub2 td{padding:9px 6px;vertical-align:top;border-top:1px solid var(--line2);font-variant-numeric:tabular-nums}
+.bub2 td.bnm{font-size:12.5px;font-weight:700;line-height:1.3}
+.bub2 tbody tr:nth-child(even):not(.total) td{background:#FBFBFD}
+.bub2 tr.total td{background:var(--head);border-top:2px solid var(--line)}
+.bc{display:flex;flex-direction:column;gap:2px;line-height:1.3}
+.bc .bn{font-size:14px;font-weight:800;color:var(--ink)}
+.bc .bd .dl{font-size:10.5px;font-weight:600;letter-spacing:0}
+.bc .bm{font-size:11px;color:var(--muted)}
+.bc .bm b{color:var(--ink);font-weight:600}
+.bc .bv{font-size:11px;font-weight:700;color:var(--pri-dd)}
+
+.tbl.spd{table-layout:fixed;width:100%}
+.tbl.spd th,.tbl.spd td{padding:6px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbl.spd thead tr:nth-child(2) th{text-align:center;vertical-align:middle;white-space:normal;line-height:1.25;font-size:10px;padding:7px 4px 3px;vertical-align:bottom}
+.tbl.spd tr.unit th{text-align:center;vertical-align:middle;white-space:normal;line-height:1.2;font-size:9.5px;color:var(--muted2);padding:2px 3px 6px;letter-spacing:.03em}
+.tbl.spd td{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:-.02em;vertical-align:middle}
+.tbl.spd td.nm{white-space:normal;line-height:1.25}
+.tbl.spd td.nm,.tbl.spd th.nmh{text-align:left;padding-left:16px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:0}
+.tbl.spd th.nmh{font-size:10.5px;vertical-align:middle}
+.tbl.spd thead tr:nth-child(2) th{height:46px;padding-top:4px;padding-bottom:4px}
+.tbl.spd tr.unit th{vertical-align:bottom}
+.tbl.spd td.hm{font-weight:600}
+.spd .gl{border-left:1px solid var(--line2)}
+.tbl.spd thead th{overflow:visible;text-overflow:clip}
+.tbl.spd thead tr:nth-child(2) th{word-break:normal;overflow-wrap:normal}
+.spd .dl{font-size:10px;letter-spacing:-.03em}
+.tbl.spd thead tr.grow-r th{text-align:left;padding:6px 2px 0}
+/* ---- Speed-to-Lead table: one typeface, fixed sizes, tabular figures ---- */
+#view .tbl.spd{font-family:'Plus Jakarta Sans',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+#view .tbl.spd td,#view .tbl.spd .dl{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:0}
+#view .tbl.spd tbody td{font-size:11.5px;font-weight:500;color:var(--ink);padding:4px 3px;height:44px;overflow:visible;border-bottom:1px solid var(--line2)}
+#view .tbl.spd tbody td.nm{font-size:12px;font-weight:700;padding-left:14px;line-height:1.3}
+#view .tbl.spd .dl{font-size:10.5px;font-weight:600}
+#view .tbl.spd tbody tr.total td{height:40px;font-weight:700;background:#F6F6FA;border-top:1px solid var(--line);border-bottom:0}
+#view .tbl.spd thead tr.grow-r th div{font-size:11px;font-weight:700;letter-spacing:.02em;padding:5px 10px}
+#view .tbl.spd thead tr:nth-child(2) th{font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--ink2);height:44px;padding:6px 4px 2px;border-bottom:0}
+#view .tbl.spd .th2{min-height:32px}
+#view .tbl.spd .th2 span{text-decoration:underline dotted #B9B8CC;text-underline-offset:3px;cursor:help}
+#view .tbl.spd tr.unit th{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.03em;padding:2px 2px 7px;overflow:visible;white-space:nowrap;border-bottom:1px solid var(--line)}
+#view .tbl.spd th.nmh{font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--ink2);padding-left:14px;vertical-align:bottom;padding-bottom:7px;border-bottom:1px solid var(--line)}
+#view .spd .gl{border-left:1px solid var(--line2)}
+.sec-title .sub .vs{color:var(--muted2);margin:0 2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidenav" aria-label="OutPerform main navigation">
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="12" r="7"></circle><path d="M16 7l5-4"></path><path d="M21 3v5"></path><path d="M21 3h-5"></path></svg></div>
+    <button class="navbtn" aria-label="Dashboard"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9A8C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg></button>
+    <button class="navbtn" aria-label="Inbox"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9A8C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg></button>
+    <button class="navbtn" aria-label="Leads"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9A8C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7"></path><path d="M18 14.8c1.9.6 3.1 2.3 3.5 5.2"></path></svg></button>
+    <button class="navbtn on" aria-label="Reports" aria-current="page"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg></button>
+    <button class="navbtn" aria-label="Settings" style="margin-top:auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9A8C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M4.9 4.9l2.1 2.1"></path><path d="M17 17l2.1 2.1"></path><path d="M2 12h3"></path><path d="M19 12h3"></path><path d="M4.9 19.1L7 17"></path><path d="M17 7l2.1-2.1"></path></svg></button>
+  </nav>
+
+  <div class="col">
+    <header class="topbar">
+      <div class="crumbs">
+        <span class="brand">Out<b>Perform</b></span><span class="vsep"></span>
+        <span>Reports</span><span style="color:var(--muted2)">/</span><span>Lead Journey</span><span style="color:var(--muted2)">/</span><span class="cur" id="crumb">BU Admin</span>
+      </div>
+      <div class="top-r">
+        <button class="hqbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path><path d="M9 21v-6h6v6"></path></svg><span id="scope">HQ · All business units</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <button class="iconbtn" aria-label="Notifications"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg></button>
+        <div class="avatar">HQ</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="pagehead">
+        <div><h1>Lead Journey Report</h1></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn-pri" data-act="export-open" aria-haspopup="dialog"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 21h16"></path></svg>Export raw data</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tgl">
+          <span class="lbl">View type</span>
+          <nav class="seg" aria-label="View type" id="tabs">
+            <a href="#admin" data-tab="admin">BU Admin</a>
+            <a href="#innov" data-tab="innov">Innovation Team</a>
+          </nav>
+        </div>
+
+      </div>
+
+      <div id="view" style="display:flex;flex-direction:column;gap:20px"></div>
+    </main>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" data-act="export-close"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="export-title"></div>
+<div id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* ============================================================
+   Time helpers — all timestamps are stored as UTC ms and shown in MYT (UTC+8)
+   ============================================================ */
+var MIN = 6e4, HOUR = 36e5, DAY = 864e5, MYT = 8 * HOUR;
+function mytMs(y, mo, d, h, mi) { return Date.UTC(y, mo, d, h || 0, mi || 0) - MYT; }
+var NOW = mytMs(2026, 9, 14, 8, 0);          // Mhub last sync / report snapshot: 14 Oct 2026, 08:00 MYT
+var DATA_START = mytMs(2024, 9, 1);           // dummy data starts 1 Oct 2024
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function pad(n, l) { return String(n).padStart(l || 2, '0'); }
+function P(ms) { var d = new Date(ms + MYT); return { y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate(), h: d.getUTCHours(), mi: d.getUTCMinutes(), wd: d.getUTCDay() }; }
+function fD(ms) { var p = P(ms); return p.d + ' ' + MON[p.mo]; }
+function fDY(ms) { var p = P(ms); return p.d + ' ' + MON[p.mo] + ' ' + p.y; }
+function fT(ms) { var p = P(ms); return pad(p.h) + ':' + pad(p.mi); }
+function ymd(ms) { var p = P(ms); return p.y + '-' + pad(p.mo + 1) + '-' + pad(p.d); }
+function fN(n) { return Math.round(n).toLocaleString('en-US'); }
+function fDur(m) {
+  if (m == null || !isFinite(m)) return '—';
+  if (m < 1) return '< 1m';
+  if (m < 60) return Math.round(m) + 'm';
+  if (m < 1440) { var h = Math.floor(m / 60), mm = Math.round(m - h * 60); if (mm === 60) { h++; mm = 0; } return h + 'h ' + mm + 'm'; }
+  var d = Math.floor(m / 1440), hh = Math.round((m - d * 1440) / 60); if (hh === 24) { d++; hh = 0; } return d + 'd ' + hh + 'h';
+}
+function fRM(v) {
+  if (!v) return 'RM 0';
+  if (v >= 1e6) return 'RM ' + (v / 1e6).toFixed(2) + 'm';
+  return 'RM ' + Math.round(v / 1e3) + 'k';
+}
+function fRMfull(v) { return 'RM ' + Math.round(v).toLocaleString('en-US'); }
+function pct(a, b, dp) { if (!b) return '—'; return (a / b * 100).toFixed(dp == null ? 1 : dp) + '%'; }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+/* ============================================================
+   Stage registry (11 stages). Index 0..10, shown as Stage 1..11.
+   ============================================================ */
+var STAGES = [
+  { name: 'Lead In', owner: 'Marketing', grp: 'mkt', key: 'lead_in',
+    tip: 'Lead is generated in OutPerform but has not yet been outreached by Origa (AI agent).' },
+  { name: 'AI Attempt Contact', owner: 'AI agent', grp: 'mkt', key: 'ai_attempt_contact',
+    tip: 'Origa (AI agent) has outreached to the lead, but the lead has not replied yet.' },
+  { name: 'AI Contacted', owner: 'AI agent', grp: 'mkt', key: 'ai_contacted',
+    tip: 'Origa has outreached and the lead has replied. However, the lead has not been qualified yet.' },
+  { name: 'New', owner: 'Sales', grp: 'sales', key: 'new',
+    tip: 'Lead has been qualified by Origa and is round-robin assigned to a sales staff.' },
+  { name: 'First Viewed', owner: 'Sales', grp: 'sales', key: 'first_viewed',
+    tip: 'The first time the assigned sales staff opens the qualified deal.' },
+  { name: 'Pending Response', owner: 'Sales', grp: 'sales', key: 'pending_response',
+    tip: 'Sales staff has outreached to the qualified lead but has not received a response yet.' },
+  { name: 'Contacted', owner: 'Sales', grp: 'sales', key: 'contacted',
+    tip: 'Sales staff has outreached to the lead and the lead has replied.' },
+  { name: 'Sales Gallery Visit', owner: 'Sales', grp: 'sales', key: 'sales_gallery_visit',
+    tip: 'The lead has visited the sales gallery.' },
+  { name: 'Negotiation', owner: 'Mhub', grp: 'mhub', key: 'negotiation', mhub: 'Reserved',
+    tip: 'The lead has reserved a unit (Mhub status: Reserved).' },
+  { name: 'Sold', owner: 'Mhub', grp: 'mhub', key: 'sold', mhub: 'Booked',
+    tip: 'The lead has booked a unit (Mhub status: Booked).' },
+  { name: 'SPA Signed', owner: 'Mhub', grp: 'mhub', key: 'spa_signed', mhub: 'Sold',
+    tip: 'The lead has signed an SPA for a unit, dated by the SPA date pushed from Mhub (Mhub status: Sold).' }
+];
+var GRP = {   // bar colours per stage owner
+  mkt:   { bar: '#8EA3E6' },
+  sales: { bar: '#4B3FD0' },
+  mhub:  { bar: '#2A2190' }
+};
+var FGRP = {
+  pre:  { label: 'Before AI qualifies', bg: '#EEF3FF', fg: '#1E3A8A', tip: 'Stages 1–3: Origa (AI agent) is working the lead. The lead has not been qualified yet.' },
+  post: { label: 'After AI qualifies',  bg: '#E9E7FB', fg: '#2A2190', tip: 'Stages 4–11: The lead has been qualified by Origa and assigned to a sales staff.' }
+};
+var MHUB_TIP = 'Mhub status → OP stage\nReserved → Negotiation\nBooked → Sold\nSold → SPA Signed';
+
+/* ============================================================
+   Dummy data — seeded so every reload gives the same numbers
+   ============================================================ */
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+var rnd = mulberry32(20261014);
+function R(a, b) { return a + rnd() * (b - a); }
+function gauss() { var u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function logn(med, s) { return med * Math.exp(s * gauss()); }
+function pick(arr, w) { var tot = 0, i; for (i = 0; i < w.length; i++) tot += w[i]; var x = rnd() * tot; for (i = 0; i < arr.length; i++) { x -= w[i]; if (x <= 0) return arr[i]; } return arr[arr.length - 1]; }
+
+var BUS = [
+  { id: 'BSC',  name: 'Bangi-Semenyih Corridor', w: .29, q: 1.00, g: 1.05, c: 1.00, price: [450, 680] },
+  { id: 'KLEC', name: 'Setia KLEC',              w: .18, q: 1.03, g: 1.10, c: 1.12, price: [680, 950] },
+  { id: 'BSA',  name: 'Bandar Setia Alam',       w: .17, q: .97,  g: .90,  c: .85,  price: [500, 760] },
+  { id: 'SEP',  name: 'Setia Eco Park',          w: .11, q: 1.00, g: 1.00, c: 1.05, price: [750, 1150] },
+  { id: 'ECH',  name: 'Setia Ecohill',           w: .14, q: 1.06, g: .98,  c: .95,  price: [420, 600] },
+  { id: 'SFH',  name: 'Setia Federal Hill',      w: .11, q: .92,  g: 1.15, c: 1.10, price: [950, 1600] }
+];
+var BU = {}; BUS.forEach(function (b) { BU[b.id] = b; });
+var REPS = [
+  ['JO', 'Joanna', ['BSC'], .85, 1.20], ['NO', 'Norazlina', ['BSC'], 1.45, 1.05], ['AR', 'Arif', ['BSC'], 1.1, .9],
+  ['FA', 'Fahmi', ['KLEC'], .7, 1.1], ['ZJ', 'Zi Jun', ['KLEC'], .5, 1.0], ['KV', 'Kavitha', ['KLEC'], 1.2, 1.15],
+  ['NI', 'Nicole', ['BSA', 'SEP'], 1.0, 1.05], ['PT', 'Pei Theng', ['BSA', 'SEP'], 1.9, .62], ['RU', 'Ruba', ['BSA', 'SEP'], 1.25, .95], ['HF', 'Hafiz', ['BSA', 'SEP'], .9, 1.0],
+  ['WL', 'Wei Ling', ['ECH'], .8, 1.1], ['SY', 'Syafiq', ['ECH'], 1.35, .85],
+  ['DA', 'Daniel', ['SFH'], 1.05, 1.2], ['MX', 'Mei Xin', ['SFH'], .75, 1.0], ['AI', 'Aisyah', ['SFH'], 1.6, .8]
+].map(function (r) { return { id: r[0], name: r[1], bus: r[2], speed: r[3], conv: r[4] }; });
+var REP = {}; REPS.forEach(function (r) { REP[r.id] = r; });
+var repsByBU = {}; BUS.forEach(function (b) { repsByBU[b.id] = REPS.filter(function (r) { return r.bus.indexOf(b.id) >= 0; }); });
+
+var SOURCES = ['Facebook Lead Ad', 'Instagram Lead Ad', 'Google Ads', 'Website Form', 'WhatsApp', 'PropertyGuru', 'iProperty', 'Walk-in', 'Referral'];
+var SRCW = [26, 16, 16, 10, 10, 9, 6, 3, 4];
+var SRCCAT = { 'Facebook Lead Ad': 'Social media', 'Instagram Lead Ad': 'Social media', 'Google Ads': 'Search & web', 'Website Form': 'Search & web', 'WhatsApp': 'Messaging', 'PropertyGuru': 'Property portal', 'iProperty': 'Property portal', 'Walk-in': 'Walk-in', 'Referral': 'Referral' };
+var CATS = ['Social media', 'Search & web', 'Messaging', 'Property portal', 'Walk-in', 'Referral'];
+var SRCQ = { 'Facebook Lead Ad': .85, 'Instagram Lead Ad': .85, 'Google Ads': 1, 'Website Form': 1.02, 'WhatsApp': 1.15, 'PropertyGuru': 1.1, 'iProperty': 1.05, 'Walk-in': 1.5, 'Referral': 1.4 };
+var HOURS = []; for (var hh = 0; hh < 24; hh++) HOURS.push(hh);
+var HOURW = [1, .6, .4, .3, .3, .5, 1.2, 2.5, 4, 5, 5.5, 5.5, 5, 5, 5, 5, 5.5, 6, 6, 6.5, 7, 6.5, 4.5, 2.5];
+var NMONTHS = 26, wobV = [1], wobQ = [1];
+for (var wi = 1; wi < NMONTHS; wi++) { wobV.push(Math.min(1.25, Math.max(.8, wobV[wi - 1] + R(-.12, .12)))); wobQ.push(Math.min(1.12, Math.max(.88, wobQ[wi - 1] + R(-.06, .06)))); }
+var PRE = ['12', '13', '16', '17', '19', '11'], PREW = [5, 3, 3, 3, 2, 2];
+
+function durMin(s, sp) {
+  switch (s) {
+    case 1: return logn(.7, .6);           // Lead In → AI Attempt Contact
+    case 2: return logn(4, 1.2);           // → AI Contacted (lead replies)
+    case 3: return logn(40, 1.3);          // → New (qualified by Origa)
+    case 4: return logn(6 * sp, 1.0);      // → First Viewed
+    case 5: return logn(8 * sp, 1.0);      // → Pending Response (first outreach)
+    case 6: return logn(150 * sp, 1.3);    // → Contacted (lead replies)
+    case 7: return logn(6.5 * 1440 * Math.sqrt(sp), .6);  // → Sales Gallery Visit
+    case 8: return logn(16 * 1440, .6);    // → Negotiation (reserved)
+    case 9: return logn(9 * 1440, .6);     // → Sold (booked)
+    case 10: return logn(21 * 1440, .35);  // → SPA Signed
+  }
+}
+var LOST_AFTER = [3, 3, 3, 21, 21, 21, 21, 45, 30, null, null]; // days without progress before a lead is closed-lost
+
+var LEADS = [], seq = 0, mhSeq = 208000, rr = {};
+function makeLead(b, t0, mi) {
+  var id = ++seq, src = pick(SOURCES, SRCW), pre = pick(PRE, PREW);
+  var a = pad(Math.floor(rnd() * 1000), 3), c = pad(Math.floor(rnd() * 10000), 4);
+  var L = { id: id, name: 'Lead ' + pad(id, 5), phone: '+60 ' + pre + '-' + a + ' ' + c, phoneMasked: '+60 ' + pre + '-*** ' + c,
+    bu: b.id, rep: null, src: src, cat: SRCCAT[src], ts: [null, null, null, null, null, null, null, null, null, null, null], lostAt: null, spa: null, mh: null, f: 0 };
+  L.ts[0] = t0;
+  var t = t0, f = 0, failed = false, q = SRCQ[src] * b.q * wobQ[mi];
+  for (var s = 1; s < 11; s++) {
+    var rep = L.rep ? REP[L.rep] : null, p;
+    switch (s) {
+      case 1: p = .996; break; case 2: p = .72; break; case 3: p = Math.min(.95, .44 * q); break;
+      case 4: p = .988; break; case 5: p = .9; break; case 6: p = .88; break;
+      case 7: p = Math.min(.9, .33 * b.g * rep.conv); break; case 8: p = Math.min(.9, .30 * b.c * rep.conv); break;
+      case 9: p = .62; break; case 10: p = .82; break;
+    }
+    if (rnd() > p) { failed = true; break; }
+    var dt = Math.max(.08, durMin(s, rep ? rep.speed : 1)) * MIN;
+    if (t + dt > NOW) break;
+    t += dt; L.ts[s] = t; f = s;
+    if (s === 3) { var list = repsByBU[b.id]; rr[b.id] = (rr[b.id] || 0) + 1; L.rep = list[rr[b.id] % list.length].id; }
+  }
+  L.f = f;
+  if (failed && LOST_AFTER[f]) { var lt = t + LOST_AFTER[f] * DAY; if (lt <= NOW) L.lostAt = lt; }
+  var unit = Math.round(R(b.price[0], b.price[1])) * 1000;
+  if (f >= 8) { L.spa = Math.round(unit * R(.93, .99) / 1000) * 1000; L.mh = 'MH-' + (++mhSeq); }
+  return L;
+}
+(function generate() {
+  for (var day = DATA_START; day < NOW; day += DAY) {
+    var p = P(day), mi = (p.y - 2024) * 12 + p.mo - 9, wk = (p.wd === 0 || p.wd === 6) ? 1.15 : 1;
+    var growth = .85 + .3 * ((day - DATA_START) / (NOW - DATA_START));
+    BUS.forEach(function (b) {
+      var n = Math.round(46 * b.w * wobV[mi] * wk * growth * R(.75, 1.25));
+      for (var i = 0; i < n; i++) {
+        var t0 = day + pick(HOURS, HOURW) * HOUR + Math.floor(rnd() * 60) * MIN;
+        if (t0 >= NOW) continue;
+        LEADS.push(makeLead(b, t0, mi));
+      }
+    });
+  }
+  LEADS.sort(function (a, b) { return b.ts[0] - a.ts[0]; });
+})();
+
+/* ============================================================
+   State — View type (BU Admin / Innovation Team) and Funnel type are page-wide;
+   every section keeps its own filters
+   ============================================================ */
+var TODAY = ymd(NOW);
+var ADMIN_BU = 'BSC';                      // the BU this BU Admin is signed in for
+function dms(str) { var p = str.split('-'); return mytMs(+p[0], +p[1] - 1, +p[2]); }
+function addD(str, n) { return ymd(dms(str) + n * DAY); }
+/* multi-select filters hold null (= all) or an array of the picked values */
+function freshF() {
+  return { range: 'ytd', from: '2026-01-01', to: TODAY, bu: null, rep: null, cat: null, src: null, status: null, stage: null, stat: 'avg', count: 'current', q: '', sort: 'new', repsort: 'new',
+    cmp: 'mom', evEnd: TODAY, refEnd: addD(TODAY, -30), evStart: addD(TODAY, -29), refStart: addD(TODAY, -59) };
+}
+var ALLST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+var SECS = ['funnel', 'trend', 'speed', 'journey', 'bubreak'];
+var state = {
+  tab: 'admin', fview: 'chart', jmode: 'lead', jminH: 0,
+  f: {}, page: 1, hidden: {}, colPanel: false, collapsed: { 'innov:journey': true }, expRep: null, ms: null,
+  s2: { admin: [0, 3], innov: [0, 3] },
+  exp: { f: freshF(), ts: 'iso', mask: false }
+};
+/* Breakdown by business unit starts with no Referenced period, so no increments show until a date is picked */
+function freshFor(k) { var F = freshF(); if (k === 'bubreak') { F.refEnd = ''; F.refStart = ''; } return F; }
+SECS.forEach(function (k) { state.f[k] = freshFor(k); });
+var PAGE = 10;
+function isAdmin() { return state.tab === 'admin'; }
+function effBUs(F) { return isAdmin() ? [ADMIN_BU] : (F.bu || BUS.map(function (b) { return b.id; })); }
+function fspec(key) {
+  var s;
+  switch (key) {
+    case 'funnel': s = ['tf', 'bu', 'rep', 'src']; break;
+    case 'trend': s = ['bu', 'rep', 'src']; break;
+    case 'speed': s = ['tf', 'bu', 'src']; break;
+    case 'journey': s = state.jmode === 'rep' ? ['count', 'range', 'bu', 'rep', 'cat', 'src', 'repsort'] : ['range', 'bu', 'rep', 'cat', 'src', 'status', 'sort', 'q']; break;
+    case 'bubreak': s = ['count', 'tf', 'bu', 'src']; break;
+    default: return null;
+  }
+  return isAdmin() ? s.filter(function (k) { return k !== 'bu'; }) : s;
+}
+
+var CS = 'avg';   // all times are shown as averages (median removed)
+function stat(arr) { if (!arr || !arr.length) return null; return CS === 'avg' ? mean(arr) : median(arr); }
+function median(arr) { if (!arr.length) return null; var a = arr.slice().sort(function (x, y) { return x - y; }), n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; }
+function mean(arr) { if (!arr.length) return null; var s = 0; arr.forEach(function (v) { s += v; }); return s / arr.length; }
+function statLabel() { return CS === 'avg' ? 'Avg' : 'Median'; }
+function statWord() { return CS === 'avg' ? 'Average' : 'Median'; }
+
+/* ---------- date range (sections without a comparison) ---------- */
+function rangeWin(F) {
+  var end = NOW, start;
+  switch (F.range) {
+    case 'l30': start = NOW - 30 * DAY; break;
+    case 'l90': start = NOW - 90 * DAY; break;
+    case 'l12m': start = NOW - 365 * DAY; break;
+    case 'all': start = DATA_START; break;
+    case 'custom':
+      if (!F.from || !F.to) { start = mytMs(2026, 0, 1); break; }
+      start = dms(F.from); end = Math.min(NOW, dms(F.to) + DAY);
+      if (!(end > start)) end = start + DAY;
+      break;
+    default: start = mytMs(2026, 0, 1);
+  }
+  return [start, end];
+}
+function winLabel(w) { return fDY(w[0]) + ' – ' + fDY(w[1] - 1); }
+
+/* ---------- timeframe: Referenced period vs Evaluated period ---------- */
+var CMP = [['wow', 'Standard: Week-on-Week'], ['mom', 'Standard: Month-on-Month'], ['qoq', 'Standard: Quarter-on-Quarter'], ['yoy', 'Standard: Year-on-Year'], ['flex', 'Flexible']];
+var CMPDUR = { wow: 7, mom: 30, qoq: 91, yoy: 365 };
+var CUR_DEF = 'Current funnel: a snapshot of where every open lead is today, with each lead counted once, in the stage it’s currently at. It tells you where leads are piling up right now.';
+var CONV_DEF = 'Conversion funnel: it counts every lead that has ever reached each stage, so you can see what share made it from one stage to a later one. For example, if the “Lead In” figure is 100 and the “AI Contacted” figure is 80, the conversion from Lead In to AI Contacted is 80%.';
+var INCR_NOTE = 'Increments compare the Evaluated period with the Referenced period.';
+function tfWins(F) {
+  var ev, rf;
+  if (F.cmp === 'flex') { ev = [dms(F.evStart), dms(F.evEnd) + DAY]; rf = F.refStart && F.refEnd ? [dms(F.refStart), dms(F.refEnd) + DAY] : null; }
+  else { var d = CMPDUR[F.cmp] * DAY; ev = [dms(F.evEnd) + DAY - d, dms(F.evEnd) + DAY]; rf = F.refEnd ? [dms(F.refEnd) + DAY - d, dms(F.refEnd) + DAY] : null; }
+  [ev, rf].forEach(function (w) {
+    if (!w) return;
+    if (w[0] < DATA_START) w[0] = DATA_START;
+    if (w[1] > NOW) w[1] = NOW;
+    if (!(w[1] > w[0])) w[1] = Math.min(NOW, w[0] + DAY);
+  });
+  return { ev: ev, ref: rf };
+}
+function tfTip(W) { return 'Referenced period: ' + (W.ref ? winLabel(W.ref) : 'not set. Pick a Referenced End Date to show increments') + '\nEvaluated period: ' + winLabel(W.ev); }
+
+/* ---------- filtering ---------- */
+function statusOf(L) { if (L.f >= 9) return 'won'; if (L.lostAt) return 'lost'; return 'open'; }
+function inSel(arr, v) { return arr == null || arr.indexOf(v) >= 0; }
+function match(L, F, opts) {
+  opts = opts || {};
+  if (effBUs(F).indexOf(L.bu) < 0) return false;
+  if (F.rep != null && F.rep.indexOf(L.rep) < 0) return false;
+  if (!inSel(F.src, L.src)) return false;
+  if (!inSel(F.cat, L.cat)) return false;
+  if (opts.repOnly && !L.rep) return false;
+  if (!inSel(F.stage, L.f)) return false;
+  if (!inSel(F.status, statusOf(L))) return false;
+  var q = (F.q || '').trim().toLowerCase().replace(/\s+/g, '');
+  if (q) {
+    var qd = q.replace(/[^0-9]/g, '');
+    if (L.name.toLowerCase().replace(/\s+/g, '').indexOf(q) < 0 && !(qd && L.phone.replace(/[^0-9]/g, '').indexOf(qd) >= 0)) return false;
+  }
+  return true;
+}
+function leadsIn(w, F, opts) {
+  var out = [];
+  for (var i = 0; i < LEADS.length; i++) { var L = LEADS[i]; if (L.ts[0] >= w[0] && L.ts[0] < w[1] && match(L, F, opts)) out.push(L); }
+  return out;
+}
+
+/* ---------- funnel computation ----------
+   times[s] = time a lead spent in stage s (from entering s to entering s+1), for leads that moved on */
+function compute(leads, T, s0) {
+  var Rc = new Array(11).fill(0), C = new Array(11).fill(0), times = [], lost = 0, base = 0, soldVal = 0, spaVal = 0;
+  for (var k = 0; k < 11; k++) times.push([]);
+  leads.forEach(function (L) {
+    if (L.ts[s0] == null || L.ts[s0] > T) return;
+    base++;
+    var f = -1;
+    for (var s = 0; s < 11; s++) { var t = L.ts[s]; if (t == null || t > T) break; f = s; Rc[s]++; if (s > 0) times[s - 1].push((t - L.ts[s - 1]) / MIN); }
+    if (L.lostAt && L.lostAt <= T) lost++; else C[f]++;
+    if (f >= 9) soldVal += L.spa;
+    if (f >= 10) spaVal += L.spa;
+  });
+  return { R: Rc, C: C, times: times, lost: lost, base: base, soldVal: soldVal, spaVal: spaVal };
+}
+function timeTip() { return statWord() + ' time a lead spends in this stage, counted for leads that have moved on to the next stage.'; }
+function tis(c, s) { return s >= 10 ? '—' : fDur(stat(c.times[s])); }    // time in stage (SPA Signed is the last stage)
+
+/* ============================================================
+   Shared UI bits
+   ============================================================ */
+var ICON = {
+  chevron: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>',
+  right: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>',
+  down: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>',
+  ext: '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg>',
+  lock: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>',
+  eyeoff: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10 10 0 0 1 12 20c-7 0-10-8-10-8a18 18 0 0 1 5.1-5.9"></path><path d="M9.9 4.2A9 9 0 0 1 12 4c7 0 10 8 10 8a18 18 0 0 1-2.2 3.2"></path><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"></path><path d="M2 2l20 20"></path></svg>',
+  cols: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16"></path><path d="M15 4v16"></path></svg>',
+  prev: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>',
+  next: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#55546E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>',
+  close: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>'
+};
+function tipAttr(t) { return ' data-tip="' + esc(t) + '"'; }
+function stageTip(s) { return 'Stage ' + (s + 1) + ': ' + STAGES[s].tip; }                           // name is already on screen
+function stageTipNamed(s) { return 'Stage ' + (s + 1) + ' · ' + STAGES[s].name + ': ' + STAGES[s].tip; } // where only "S4" is shown
+function stageName(s) { return '<span class="sname"' + tipAttr(stageTip(s)) + '>' + STAGES[s].name + '<i class="i">i</i></span>'; }
+function stageHead(s) { return STAGES[s].name; }
+function stageHeadTip(s) { return '<span' + tipAttr(stageTip(s)) + (s >= 8 ? ' style="color:var(--pri-d)"' : '') + '>' + stageHead(s) + '</span>'; }
+function grpChip(g) { var fg = FGRP[g]; return '<span class="grp-chip" style="background:' + fg.bg + ';color:' + fg.fg + '"' + tipAttr(fg.tip) + '>' + fg.label + '<i class="i">i</i></span>'; }
+/* group header row for tables: spans = list of [n, 'pre'|'post'|null] */
+function grpRow(spans) {
+  return '<tr class="grow-r">' + spans.filter(function (x) { return x[0] > 0; }).map(function (x) {
+    if (!x[1]) return '<th colspan="' + x[0] + '"></th>';
+    var fg = FGRP[x[1]];
+    return '<th colspan="' + x[0] + '"><div style="background:' + fg.bg + ';color:' + fg.fg + '"' + tipAttr(fg.tip) + '>' + fg.label + '<i class="i">i</i></div></th>';
+  }).join('') + '</tr>';
+}
+function delta(cur, prev, goodHigh, pp) {
+  if (goodHigh == null) goodHigh = true;
+  if (cur == null || prev == null || !isFinite(cur) || !isFinite(prev)) return '<span class="dl neu">–</span>';
+  var d;
+  if (pp) d = (cur - prev) * 100; else { if (!prev) return '<span class="dl neu">–</span>'; d = (cur - prev) / prev * 100; }
+  if (Math.abs(d) < .05) return '<span class="dl neu">0' + (pp ? 'pp' : '%') + '</span>';
+  var up = d > 0, cls = (up === goodHigh) ? 'good' : 'bad';
+  return '<span class="dl ' + cls + '">' + (up ? '▲ +' : '▼ ') + d.toFixed(pp ? 1 : 0) + (pp ? 'pp' : '%') + '</span>';
+}
+/* increment vs the Referenced period, e.g. "▼ -765 (-3.3%)" */
+function incr(cur, ref) {
+  var d = cur - ref, p = ref ? (d / ref * 100) : null;
+  var cls = d > 0 ? 'good' : d < 0 ? 'bad' : 'neu';
+  var txt = (d < 0 ? '▼ -' : '▲ +') + fN(Math.abs(d)) + ' (' + (p == null ? (d ? 'new' : '+0.0%') : (p < 0 ? '' : '+') + p.toFixed(1) + '%') + ')';
+  return '<span class="dl ' + cls + '"' + tipAttr('Referenced period: ' + fN(ref) + '\nEvaluated period: ' + fN(cur)) + '>' + txt + '</span>';
+}
+/* tighter increment for dense tables, e.g. "▼-4 (-6.8%)", "▲+21 (+11%)" */
+function incrS(cur, ref) {
+  var d = cur - ref, p = ref ? (d / ref * 100) : null;
+  var cls = d > 0 ? 'good' : d < 0 ? 'bad' : 'neu';
+  var ps = p == null ? (d ? 'new' : '0%') : !d ? '0%' : (p < 0 ? '' : '+') + (Math.abs(p) >= 10 ? Math.round(p) : p.toFixed(1)) + '%';
+  return '<span class="dl ' + cls + '">' + (d < 0 ? '▼-' : '▲+') + fN(Math.abs(d)) + ' (' + ps + ')</span>';
+}
+function section(key, title, sub, ctrl, body, flush) {
+  var open = !state.collapsed[state.tab + ':' + key];
+  var minH = key === 'journey' && state.jminH && open ? ' style="min-height:' + state.jminH + 'px"' : '';
+  return '<section class="card sec' + (open ? ' open' : '') + '" data-sec="' + key + '"' + minH + '>' +
+    '<div class="sec-head"><div class="sec-title"><button class="min-btn" data-act="min" data-sec="' + key + '" aria-expanded="' + open + '" aria-label="' + (open ? 'Minimize' : 'Expand') + ' section"' + tipAttr(open ? 'Minimize section' : 'Expand section') + '>' + ICON.chevron + '</button>' +
+    '<h2>' + title + '</h2>' + (open && sub ? '<span class="sub">' + sub + '</span>' : '') + '</div>' +
+    (open && ctrl ? '<div class="sec-ctrl">' + ctrl + '</div>' : '') + '</div>' +
+    (open && fspec(key) ? filterBar(key) : '') +
+    (open ? '<div class="sec-body' + (flush ? ' flush' : '') + '">' + body + '</div>' : '') + '</section>';
+}
+function segBtns(act, items, cur, extra) {
+  return '<div class="seg sm" role="group">' + items.map(function (it) { return '<button data-act="' + act + '" data-v="' + it[0] + '"' + (extra || '') + ' class="' + (it[0] === cur ? 'on' : '') + '" aria-pressed="' + (it[0] === cur) + '">' + it[1] + '</button>'; }).join('') + '</div>';
+}
+
+/* ============================================================
+   Multi-select dropdowns (Business unit, Sales rep, Deal source, Status, Stage)
+   ============================================================ */
+var STATUSES = [['open', 'Open'], ['lost', 'Lost'], ['won', 'Won']];
+var MSDEF = {
+  bu: { label: 'Business unit', all: 'All business units', noun: 'business units', w: 165 },
+  rep: { label: 'Sales rep', all: 'All sales reps', noun: 'sales reps', w: 140 },
+  src: { label: 'Deal source', all: 'All sources', noun: 'sources', w: 140 },
+  cat: { label: 'Source category', all: 'All categories', noun: 'categories', w: 150 },
+  status: { label: 'Status', all: 'All', noun: 'statuses', w: 110, tip: 'Open: still progressing\nLost: closed-lost after no progress\nWon: reached Sold (booked in Mhub) or SPA Signed' },
+  stage: { label: 'Furthest stage', all: 'Any stage', noun: 'stages', w: 165, tip: 'Shows leads whose furthest stage right now is one of the stages picked' }
+};
+/* options as groups: [{ g: label|null, gk: chip key|null, items: [[value, label]] }] */
+function msGroups(key, F) {
+  switch (key) {
+    case 'bu': return [{ items: BUS.map(function (b) { return [b.id, b.name]; }) }];
+    case 'src': return [{ items: SOURCES.filter(function (s) { return inSel(F.cat, SRCCAT[s]); }).map(function (s) { return [s, s]; }) }];
+    case 'cat': return [{ items: CATS.map(function (c) { return [c, c]; }) }];
+    case 'status': return [{ items: STATUSES }];
+    case 'stage': return [{ g: FGRP.pre.label, items: [0, 1, 2].map(function (s) { return [s, stageHead(s)]; }) }, { g: FGRP.post.label, items: [3, 4, 5, 6, 7, 8, 9, 10].map(function (s) { return [s, stageHead(s)]; }) }];
+    case 'rep':
+      var bus = effBUs(F);
+      var gs = bus.map(function (b) { return { g: bus.length > 1 ? BU[b].name : null, items: repsByBU[b].filter(function (r) { return r.bus[0] === b || bus.indexOf(r.bus[0]) < 0; }).map(function (r) { return [r.id, r.name]; }) }; });
+      return gs.filter(function (g) { return g.items.length; });
+  }
+}
+function msAll(key, F) { var v = []; msGroups(key, F).forEach(function (g) { g.items.forEach(function (it) { if (v.indexOf(it[0]) < 0) v.push(it[0]); }); }); return v; }
+function msSet(sec, key, arr) {
+  var F = getF(sec), all = msAll(key, F);
+  arr = all.filter(function (v) { return arr.indexOf(v) >= 0; });
+  F[key] = arr.length === all.length ? null : arr;
+}
+function msLabel(key, F) {
+  var d = MSDEF[key], sel = F[key];
+  if (sel == null) return d.all;
+  if (!sel.length) return 'None selected';
+  if (sel.length === 1) { var lbl = sel[0]; msGroups(key, F).forEach(function (g) { g.items.forEach(function (it) { if (it[0] === sel[0]) lbl = it[1]; }); }); return lbl; }
+  return sel.length + ' ' + d.noun;
+}
+function msCtl(sec, key) {
+  var F = getF(sec), d = MSDEF[key], id = sec + ':' + key, open = state.ms === id, sel = F[key];
+  var p = '';
+  if (open) {
+    var all = msAll(key, F), n = sel == null ? all.length : sel.length;
+    p = '<div class="mspanel"><label class="msall"><input type="checkbox" data-ms="' + id + '" data-msall="1"' + (n === all.length ? ' checked' : '') + (n && n < all.length ? ' data-ind="1"' : '') + '>' + d.all + '</label>';
+    msGroups(key, F).forEach(function (g) {
+      if (g.g) {
+        var gv = g.items.map(function (it) { return it[0]; }), k = gv.filter(function (v) { return inSel(sel, v); }).length;
+        p += '<label class="msg"><input type="checkbox" data-ms="' + id + '" data-msg="' + esc(gv.join('|')) + '"' + (k === gv.length ? ' checked' : '') + (k && k < gv.length ? ' data-ind="1"' : '') + '>' + g.g + '</label>';
+      }
+      p += g.items.map(function (it) { return '<label class="' + (g.g ? 'msi' : 'msf') + '"><input type="checkbox" data-ms="' + id + '" data-msv="' + esc(it[0]) + '"' + (inSel(sel, it[0]) ? ' checked' : '') + '>' + it[1] + '</label>'; }).join('');
+    });
+    p += '</div>';
+  }
+  return fl(d.label, '<div class="msw"><button type="button" class="msel' + (sel && !sel.length ? ' empty-sel' : '') + '" data-act="ms" data-v="' + id + '" aria-haspopup="true" aria-expanded="' + open + '" style="min-width:' + d.w + 'px"><span>' + esc(msLabel(key, F)) + '</span>' + ICON.chevron + '</button>' + p + '</div>', d.tip);
+}
+function msValue(key, raw) { return key === 'stage' ? +raw : raw; }
+
+/* ============================================================
+   Section filter strips (each one only drives its own section)
+   ============================================================ */
+function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + label + '</option>'; }
+function fl(label, ctl, tip) { return '<div class="fl"><span class="fll"' + (tip ? tipAttr(tip) : '') + '>' + label + (tip ? '<i class="i">i</i>' : '') + '</span>' + ctl + '</div>'; }
+var RANGES = [['ytd', 'Year to date'], ['l30', 'Last 30 days'], ['l90', 'Last 90 days'], ['l12m', 'Last 12 months'], ['all', 'All data (since Oct 2024)'], ['custom', 'Custom…']];
+function dateIn(a, k, v) { return '<input type="date" ' + a + ' data-k="' + k + '" value="' + v + '" min="' + ymd(DATA_START) + '" max="' + TODAY + '">'; }
+function rangeCtl(a, F) {
+  var h = fl('Date range (Lead In)', '<select ' + a + ' data-k="range" style="min-width:140px">' + RANGES.map(function (r) { return opt(r[0], r[1], F.range); }).join('') + '</select>');
+  if (F.range === 'custom') h += fl('From', dateIn(a, 'from', F.from)) + fl('To', dateIn(a, 'to', F.to));
+  return h;
+}
+function tfCtl(a, F) {
+  var h = fl('Comparison type', '<select ' + a + ' data-k="cmp" style="min-width:205px">' + CMP.map(function (c) { return opt(c[0], c[1], F.cmp); }).join('') + '</select>', tfTip(tfWins(F)));
+  var fields = F.cmp === 'flex'
+    ? [['refStart', 'Referenced Start Date'], ['refEnd', 'Referenced End Date'], ['evStart', 'Evaluated Start Date'], ['evEnd', 'Evaluated End Date']]
+    : [['refEnd', 'Referenced End Date'], ['evEnd', 'Evaluated End Date']];
+  var span = { wow: 'one week', mom: 'one month', qoq: 'one quarter', yoy: 'one year' }[F.cmp];
+  var EV_TIP = 'The period this section reports on. Every count, conversion rate and time shown here is calculated from leads that came in during the Evaluated period.';
+  var tips = {
+    refEnd: INCR_NOTE,
+    evEnd: EV_TIP + (span ? '\n\nThe Evaluated period ends on this date and covers ' + span + ', as set by the Comparison type.' : ''),
+    evStart: EV_TIP
+  };
+  return h + fields.map(function (f) { return fl(f[1], dateIn(a, f[0], F[f[0]]), tips[f[0]] || null); }).join('');
+}
+var JSORTS = [['new', 'Newest Lead In'], ['old', 'Oldest Lead In'], ['far', 'Furthest stage'], ['long', 'Longest total time'], ['price', 'Highest SPA price']];
+var RSORTS = [['new', 'New leads'], ['sold', 'Sold value (SPA price)'], ['view', 'Fastest first view'], ['contact', 'Fastest first outreach']];
+function filterBar(key) {
+  var F = state.f[key], a = 'data-sf="' + key + '"', h = '';
+  fspec(key).forEach(function (k) {
+    switch (k) {
+      case 'range': h += rangeCtl(a, F); break;
+      case 'tf': h += tfCtl(a, F); break;
+      case 'bu': case 'rep': case 'cat': case 'src': case 'status': case 'stage': h += msCtl(key, k); break;
+      case 'count': h += fl('Funnel type', segBtns('scount', [['current', 'Current Funnel'], ['reached', 'Conversion Funnel']], F.count, ' data-sec="' + key + '"'), CUR_DEF + '\n\n' + CONV_DEF); break;
+      case 'sort': h += fl('Sort by', '<select ' + a + ' data-k="sort" style="min-width:140px">' + JSORTS.map(function (s) { return opt(s[0], s[1], F.sort); }).join('') + '</select>'); break;
+      case 'repsort': h += fl('Sort by', '<select ' + a + ' data-k="repsort" style="min-width:160px">' + RSORTS.map(function (s) { return opt(s[0], s[1], F.repsort); }).join('') + '</select>'); break;
+      case 'q': h += fl('Search', '<input type="search" ' + a + ' data-k="q" placeholder="Lead name or phone" value="' + esc(F.q) + '">'); break;
+    }
+  });
+  h += '<div class="grow"></div><button class="btn-link" data-act="freset" data-sec="' + key + '">Reset</button>';
+  return '<div class="sfilters" role="group" aria-label="Section filters">' + h + '</div>';
+}
+
+/* ============================================================
+   Section 1 — Sales Funnel (chart + conversion matrix, or stage cards)
+   ============================================================ */
+function funnelSection() {
+  var F = state.f.funnel;
+  var W = tfWins(F);
+  var cur = compute(leadsIn(W.ev, F), W.ev[1], 0), ref = compute(leadsIn(W.ref, F), W.ref[1], 0);
+  var isCur = true;   // bars and cards always show the Current funnel; the table below uses the Conversion funnel
+  var ctrl = segBtns('fview', [['chart', 'Funnel chart'], ['cards', 'Stage cards']], state.fview);
+  var body = (state.fview === 'chart' ? funnelChart(cur, ref, isCur) : stageCards(cur, ref, isCur)) + funnelNote(isCur);
+  return section('funnel', '<span' + tipAttr(CUR_DEF) + '>Sales Funnel<i class="i">i</i></span>', '', ctrl, body);
+}
+function funnelNote(isCur) {
+  return '<div class="foot">Bars and stage cards show the Current funnel: where open leads are right now. Hover a bar for its share of all open leads. Each lead is counted in one stage only, and leads closed as lost are not included. ' +
+    INCR_NOTE + ' Time is the average time a lead spends in each stage.</div>';
+}
+function stageVal(c, s, isCur) { return isCur ? c.C[s] : c.R[s]; }
+function timeChip(c, s) {
+  if (s >= 10) return '';
+  return '<span class="chip"' + tipAttr(timeTip()) + '>' + statLabel() + ' ' + tis(c, s) + '</span>';
+}
+function funnelChart(cur, ref, isCur) {
+  var vals = ALLST.map(function (s) { return stageVal(cur, s, isCur); });
+  var max = Math.max.apply(null, vals.concat([1]));
+  var total = vals.reduce(function (a, b) { return a + b; }, 0);
+  var rows = '', lastG = '';
+  ALLST.forEach(function (s) {
+    var st = STAGES[s], g = GRP[st.grp], fg = s < 3 ? 'pre' : 'post';
+    if (fg !== lastG) { lastG = fg; rows += '<div class="fgrp">' + grpChip(fg) + '</div>'; }
+    var v = vals[s], wpc = v ? Math.max(.8, v / max * 100) : 0;
+    var money = '';
+    if (!isCur && s === 9) money = '<span class="fmoney"' + tipAttr('Sum of SPA prices (from Mhub) for leads that reached Sold') + '>' + fRM(cur.soldVal) + '</span>';
+    if (!isCur && s === 10) money = '<span class="fmoney"' + tipAttr('Sum of SPA prices (from Mhub) for leads with SPA signed') + '>' + fRM(cur.spaVal) + '</span>';
+    var btip = st.name + ': ' + fN(v) + ' leads\n' + pct(v, total) + ' of all ' + fN(total) + ' open leads in the Current funnel';
+    rows += '<div class="frow"><div class="flab"><span class="snum">Stage ' + (s + 1) + '</span>' + stageName(s) + '</div>' +
+      '<div class="ftrack"' + tipAttr(btip) + '><div class="fbarbox"><div class="fbar" style="width:' + wpc + '%;background:' + g.bar + '"></div></div><span class="fval">' + fN(v) + '</span></div>' +
+      '<div class="fmeta">' + incr(v, stageVal(ref, s, isCur)) + timeChip(cur, s) + money + '</div></div>';
+  });
+  var below = '<div class="mxwrap"><div class="fcap"><span class="lbl"' + tipAttr(CONV_DEF + '\n\nFormula: conversion from Stage X to Stage Y = leads that reached Stage Y ÷ leads that reached Stage X.') + '>Stage X → Stage Y conversion (Conversion funnel)<i class="i">i</i></span><span class="sub">Conversion = leads that reached Stage Y ÷ leads that reached Stage X</span></div>' + matrix(cur) +
+    '<div class="foot">Each cell shows the share of leads that reached the row stage (X) and went on to reach the column stage (Y), with the number of leads that reached Stage Y below it. “Reached” includes leads that later moved on or were lost. This table uses the Conversion funnel; the bars above use the Current funnel.</div></div>';
+  return '<div class="fwrap"><div>' + rows + '</div>' + below + '</div>';
+}
+function matrix(cur) {
+  var h = '<table class="mx"><thead><tr><th class="corner">From X ↓ · To Y →</th>' +
+    ALLST.map(function (s) { return '<th' + tipAttr(stageTipNamed(s)) + '>S' + (s + 1) + '</th>'; }).join('') + '</tr></thead><tbody>';
+  ALLST.forEach(function (r) {
+    h += '<tr><th class="rl"' + tipAttr(stageTip(r)) + '>' + (r + 1) + ' · ' + STAGES[r].name + '</th>';
+    ALLST.forEach(function (c) {
+      if (c === r) h += '<td class="eq"' + tipAttr(STAGES[r].name + ': ' + fN(cur.R[r]) + ' leads reached') + '><b>100%</b><span class="mxn">' + fN(cur.R[r]) + '</span></td>';
+      else if (c < r) h += '<td class="na"></td>';
+      else {
+        var v = cur.R[r] ? cur.R[c] / cur.R[r] : 0;
+        h += '<td style="background:rgba(75,63,208,' + (.03 + .55 * Math.sqrt(v)).toFixed(3) + ');color:' + (v > .3 ? '#fff' : '#16162A') + '"' +
+          tipAttr(STAGES[r].name + ' → ' + STAGES[c].name + '\n' + fN(cur.R[c]) + ' of ' + fN(cur.R[r]) + ' leads') + '><b>' + (v * 100).toFixed(v < .1 ? 1 : 0) + '%</b><span class="mxn">' + fN(cur.R[c]) + '</span></td>';
+      }
+    });
+    h += '</tr>';
+  });
+  h += '<tr class="mxcount"><th class="rl"' + tipAttr('Number of leads that reached each stage in the Evaluated period (Conversion funnel)') + '>Leads reached<i class="i">i</i></th>' +
+    ALLST.map(function (c) { return '<td>' + fN(cur.R[c]) + '</td>'; }).join('') + '</tr>';
+  return h + '</tbody></table>';
+}
+function stageCards(cur, ref, isCur) {
+  function card(s) {
+    var st = STAGES[s], v = stageVal(cur, s, isCur);
+    return '<div class="scard' + (st.grp === 'mhub' ? ' mh' : '') + '"><div class="top"><span class="snum">Stage ' + (s + 1) + '</span></div>' +
+      '<span class="nm">' + stageName(s) + '</span><span class="big">' + fN(v) + '</span>' + incr(v, stageVal(ref, s, isCur)) +
+      (s >= 9 && !isCur ? '<span class="val">' + fRM(s === 9 ? cur.soldVal : cur.spaVal) + '</span>' : '') +
+      '<div class="hr"></div><div class="row"><span>' + statLabel() + '</span><span class="mono" style="font-size:12.5px;color:var(--ink);font-weight:500"' + (s < 10 ? tipAttr(timeTip()) : '') + '>' + tis(cur, s) + '</span></div></div>';
+  }
+  var groups = [['pre', [0, 1, 2]], ['post', [3, 4, 5, 6, 7, 8, 9, 10]]];
+  return '<div class="cgroups">' + groups.map(function (g) {
+    var fg = FGRP[g[0]], n = g[1].length;
+    return '<div class="cgbox" style="flex:' + n + ' 1 0;min-width:' + (n * 102 + (n - 1) * 8 + 16) + 'px;background:' + fg.bg + '">' +
+      '<div class="cghead"><span class="grp-chip" style="background:#fff;color:' + fg.fg + '"' + tipAttr(fg.tip) + '>' + fg.label + '<i class="i">i</i></span></div>' +
+      '<div class="cards" style="grid-template-columns:repeat(' + n + ',minmax(102px,1fr))">' + g[1].map(card).join('') + '</div></div>';
+  }).join('') + '</div>';
+}
+
+/* ============================================================
+   Section 2 — Stage-to-stage conversion, trailing 12 months
+   ============================================================ */
+function trendSection() {
+  var F = state.f.trend, pair = state.s2[state.tab], a = pair[0], b = pair[1];
+  var months = [], p = P(NOW);
+  for (var i = 11; i >= 0; i--) {
+    var st = mytMs(p.y, p.mo - i, 1), en = Math.min(NOW, mytMs(p.y, p.mo - i + 1, 1));
+    months.push({ st: st, en: en, label: MON[P(st).mo] + ' ' + String(P(st).y).slice(2), f: 0, t: 0, mtd: i === 0 });
+  }
+  var lo = months[0].st;
+  LEADS.forEach(function (L) {
+    if (L.ts[0] < lo) return;
+    if (!match(L, F)) return;
+    var m = months.length - 1; while (m > 0 && L.ts[0] < months[m].st) m--;
+    if (L.ts[a] != null) months[m].f++;
+    if (L.ts[b] != null) months[m].t++;
+  });
+  var fromOpts = '', toOpts = '';
+  for (var s = 0; s < 10; s++) fromOpts += '<option value="' + s + '"' + (s === a ? ' selected' : '') + '>' + stageHead(s) + '</option>';
+  for (s = a + 1; s < 11; s++) toOpts += '<option value="' + s + '"' + (s === b ? ' selected' : '') + '>' + stageHead(s) + '</option>';
+  var ctrl = '<label class="lbl" style="display:flex;align-items:center;gap:8px">From<select class="sel-inline" data-f="s2from">' + fromOpts + '</select></label>' +
+    '<label class="lbl" style="display:flex;align-items:center;gap:8px">To<select class="sel-inline" data-f="s2to">' + toOpts + '</select></label>';
+  var body = '<div class="legend"><span><i class="sw" style="background:#C9C4F3"></i>' + STAGES[a].name + '</span><span><i class="sw" style="background:#4B3FD0"></i>' + STAGES[b].name + '</span><span><i class="swl" style="background:#1E3A8A"></i>' + STAGES[a].name + ' → ' + STAGES[b].name + ' conversion</span></div>' +
+    trendChart(months, a, b);
+  return section('trend', STAGES[a].name + '-to-' + STAGES[b].name + ' Conversion', 'Trailing 12 months', ctrl, body);
+}
+function niceNum(v) { if (v <= 0) return 1; var e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e; }
+function niceRate(v) { var c = [.02, .05, .1, .15, .2, .25, .3, .4, .5, .6, .8, 1]; for (var i = 0; i < c.length; i++) if (v <= c[i]) return c[i]; return 1; }
+function trendChart(ms, a, b) {
+  var W = 1000, H = 220, pl = 56, pr = 56, pt = 22, pb = 28, pw = W - pl - pr, ph = H - pt - pb, n = ms.length, gw = pw / n, bw = Math.min(20, gw * .3), bottom = pt + ph;
+  var maxC = niceNum(Math.max.apply(null, ms.map(function (m) { return m.f; }).concat([1])) * 1.08);
+  var rates = ms.map(function (m) { return m.f ? m.t / m.f : 0; });
+  var maxR = niceRate(Math.max.apply(null, rates.concat([.01])) * 1.3);
+  function x(i) { return pl + i * gw + gw / 2; }
+  function yc(v) { return bottom - v / maxC * ph; }
+  function yr(v) { return bottom - v / maxR * ph; }
+  var g = '';
+  [0, .25, .5, .75, 1].forEach(function (f) {
+    var yy = pt + (1 - f) * ph;
+    g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="#EEEDF4" stroke-width="1"/>' +
+      '<text x="' + (pl - 8) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="11" fill="#8A89A3">' + fN(maxC * f) + '</text>' +
+      '<text x="' + (W - pr + 8) + '" y="' + (yy + 4) + '" font-size="11" fill="#8A89A3">' + Math.round(maxR * f * 100) + '%</text>';
+  });
+  ms.forEach(function (m, i) {
+    var op = m.mtd ? ' opacity=".55"' : '';
+    g += '<rect x="' + (x(i) - bw - 2) + '" y="' + yc(m.f) + '" width="' + bw + '" height="' + (bottom - yc(m.f)) + '" rx="3" fill="#C9C4F3"' + op + '/>' +
+      '<rect x="' + (x(i) + 2) + '" y="' + yc(m.t) + '" width="' + bw + '" height="' + (bottom - yc(m.t)) + '" rx="3" fill="#4B3FD0"' + op + '/>' +
+      '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11" fill="#55546E">' + m.label + (m.mtd ? ' (MTD)' : '') + '</text>';
+  });
+  g += '<polyline fill="none" stroke="#1E3A8A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="' + rates.map(function (r, i) { return x(i) + ',' + yr(r); }).join(' ') + '"/>';
+  rates.forEach(function (r, i) {
+    g += '<circle cx="' + x(i) + '" cy="' + yr(r) + '" r="4" fill="#1E3A8A" stroke="#fff" stroke-width="1.5"/>' +
+      '<text x="' + x(i) + '" y="' + (yr(r) - 10) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#1E3A8A">' + (r * 100).toFixed(r < .1 ? 1 : 0) + '%</text>';
+  });
+  ms.forEach(function (m, i) {
+    g += '<rect x="' + (pl + i * gw) + '" y="0" width="' + gw + '" height="' + H + '" fill="transparent"' +
+      tipAttr(m.label + (m.mtd ? ' (month to date)' : '') + '\n' + STAGES[a].name + ': ' + fN(m.f) + '\n' + STAGES[b].name + ': ' + fN(m.t) + '\nConversion: ' + pct(m.t, m.f)) + '/>';
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block" role="img" aria-label="Monthly conversion chart">' + g + '</svg>';
+}
+
+/* ============================================================
+   Section 7 — Speed-to-Lead & Aging Metrics by BU (Innovation Team only)
+   ============================================================ */
+function groupMetrics(leads, T) {
+  var m = { n: 0, qual: [], viewed: 0, fv: [], out: 0, notOut: 0, cont: 0, first: [], aging: [], gal: 0, neg: 0, sold: 0, spa: 0, soldV: 0, spaV: 0 };
+  leads.forEach(function (L) {
+    var ts = L.ts;
+    if (ts[3] == null || ts[3] > T) return;
+    m.n++;
+    m.qual.push((ts[3] - ts[0]) / MIN);
+    var lost = L.lostAt && L.lostAt <= T;
+    function r(s) { return ts[s] != null && ts[s] <= T; }
+    if (r(4)) { m.viewed++; m.fv.push((ts[4] - ts[3]) / MIN); }
+    if (r(5)) { m.out++; m.first.push((ts[5] - ts[3]) / MIN); } else if (!lost) m.notOut++;
+    if (r(6)) m.cont++;
+    if (r(7)) m.gal++;
+    if (r(8)) m.neg++;
+    if (r(9)) { m.sold++; m.soldV += L.spa; }
+    if (r(10)) { m.spa++; m.spaV += L.spa; }
+    if (!lost && !r(5)) { var last = ts[0];   // aging of open qualified leads not yet contacted (Pending Response not reached)
+      for (var s = 0; s < 11; s++) { if (r(s)) last = ts[s]; else break; } m.aging.push((T - last) / DAY); }
+  });
+  m.qualS = stat(m.qual); m.fvS = stat(m.fv); m.firstS = stat(m.first); m.agingS = stat(m.aging);
+  m.outR = m.n ? m.out / m.n : null;
+  return m;
+}
+function fPct(a, b) { if (!b) return '—'; var v = a / b * 100; return (v >= 99.95 ? '100' : v.toFixed(1)) + '%'; }
+function fHrs(min) { if (min == null || !isFinite(min)) return '—'; var h = min / 60; return (h < 10 ? h.toFixed(1) : String(Math.round(h))); }
+function speedSection() {
+  var F = state.f.speed; CS = F.stat;
+  var W = tfWins(F), bus = effBUs(F);
+  var cur = leadsIn(W.ev, F), ref = W.ref ? leadsIn(W.ref, F) : [];
+  var groups = BUS.filter(function (b) { return bus.indexOf(b.id) >= 0; });
+  var rows = groups.map(function (b) {
+    return { name: b.name, c: groupMetrics(cur.filter(function (L) { return L.bu === b.id; }), W.ev[1]), p: groupMetrics(ref.filter(function (L) { return L.bu === b.id; }), W.ref ? W.ref[1] : NOW) };
+  });
+  var tot = { name: groups.length === BUS.length ? 'HQ total' : 'Total', c: groupMetrics(cur, W.ev[1]), p: groupMetrics(ref, W.ref ? W.ref[1] : NOW), tot: true };
+  var SW = statWord().toLowerCase();
+  function dz(h) { return String(h).replace('▲ +', '▲+').replace('▼ ', '▼'); }   // tighter arrows in this dense table
+  function unc(m) { return m.n - m.out; }
+  function rate(a, b) { return b ? a / b : null; }
+  var COLS = [
+    { g: 'origa', h: 'Qual. time', tip: 'Time Origa takes to qualify a lead: Lead In (Stage 1) to New (Stage 4)',
+      sub: [['Hrs', function (m) { return fHrs(m.c.qualS); }], ['Δ%', function (m) { return delta(m.c.qualS, m.p.qualS, false); }]] },
+    { g: 'origa', h: 'Leads qualified', tip: 'Leads qualified by Origa (reached Stage 4 · New)',
+      sub: [['#', function (m) { return fN(m.c.n); }, 'w']] },
+    { g: 'staff', h: 'Qualified viewed', tip: 'Qualified leads that sales staff have opened (reached Stage 5 · First Viewed)',
+      sub: [['#', function (m) { return fN(m.c.viewed); }], ['%', function (m) { return fPct(m.c.viewed, m.c.n); }, null, function (m) { return rate(m.c.viewed, m.c.n); }, true], ['Δ%', function (m) { return delta(rate(m.c.viewed, m.c.n), rate(m.p.viewed, m.p.n)); }]] },
+    { g: 'staff', h: 'Time to first view', tip: 'Time for sales staff to first open a qualified lead: New (Stage 4) to First Viewed (Stage 5)',
+      sub: [['Hrs', function (m) { return fHrs(m.c.fvS); }], ['Δ%', function (m) { return delta(m.c.fvS, m.p.fvS, false); }]] },
+    { g: 'staff', h: 'Qualified contacted', tip: 'Qualified leads that sales staff have outreached (reached Stage 6 · Pending Response)',
+      sub: [['#', function (m) { return fN(m.c.out); }], ['%', function (m) { return fPct(m.c.out, m.c.n); }, null, function (m) { return rate(m.c.out, m.c.n); }, true], ['Δ%', function (m) { return delta(rate(m.c.out, m.c.n), rate(m.p.out, m.p.n)); }]] },
+    { g: 'staff', h: 'Time to first contact', tip: 'Time for sales staff to first outreach a qualified lead: New (Stage 4) to Pending Response (Stage 6)',
+      sub: [['Hrs', function (m) { return fHrs(m.c.firstS); }], ['Δ%', function (m) { return delta(m.c.firstS, m.p.firstS, false); }]] },
+    { g: 'staff', h: 'Qualified uncontacted', tip: 'Qualified leads that sales staff have not outreached (still at Stage 4 · New or Stage 5 · First Viewed)',
+      sub: [['#', function (m) { return fN(unc(m.c)); }], ['%', function (m) { return fPct(unc(m.c), m.c.n); }, null, function (m) { return rate(unc(m.c), m.c.n); }, false], ['Δ%', function (m) { return delta(rate(unc(m.c), m.c.n), rate(unc(m.p), m.p.n), false); }]] },
+    { g: 'staff', h: 'Aging time of qualified uncontacted', tip: statWord() + ' days since the lead last moved stage, for open qualified leads that sales staff have not contacted yet',
+      sub: [['Days', function (m) { return m.c.agingS == null ? '—' : m.c.agingS.toFixed(1); }], ['Δ%', function (m) { return delta(m.c.agingS, m.p.agingS, false); }]] },
+    { g: 'staff', h: 'Gallery visited', tip: 'Leads that visited the sales gallery (reached Stage 8 · Sales Gallery Visit)',
+      sub: [['#', function (m) { return fN(m.c.gal); }], ['% Qual.', function (m) { return fPct(m.c.gal, m.c.n); }, null, function (m) { return rate(m.c.gal, m.c.n); }, true]] },
+    { g: 'staff', h: 'Units booked', tip: 'Leads that booked a unit (reached Stage 10 · Sold; Mhub status: Booked).',
+      sub: [['#', function (m) { return fN(m.c.sold); }], ['% Qual.', function (m) { return fPct(m.c.sold, m.c.n); }, null, function (m) { return rate(m.c.sold, m.c.n); }, true], ['SPA price', function (m) { return fRM(m.c.soldV); }, 'w']] },
+    { g: 'staff', h: 'Units sold', tip: 'Leads that signed an SPA (reached Stage 11 · SPA Signed; Mhub status: Sold).',
+      sub: [['#', function (m) { return fN(m.c.spa); }], ['% Qual.', function (m) { return fPct(m.c.spa, m.c.n); }, null, function (m) { return rate(m.c.spa, m.c.n); }, true], ['SPA price', function (m) { return fRM(m.c.spaV); }, 'w']] }
+  ];
+  var cnt = { origa: 0, staff: 0 }; COLS.forEach(function (c) { cnt[c.g] += c.sub.length; });
+  /* column widths by kind, so every value fits and the table spans exactly the section width */
+  var CW = { 'Hrs': 38, 'Δ%': 46, '#': 38, '%': 48, '% Qual.': 48, 'Days': 40, 'SPA price': 60 };
+  var cg = '<colgroup><col style="width:128px">' + COLS.map(function (c) { return c.sub.map(function (s) { var w = c.h === 'Leads qualified' ? 62 : CW[s[0]] || 46; return '<col style="width:' + w + 'px">'; }).join(''); }).join('') + '</colgroup>';
+  var head = '<thead><tr class="grow-r"><th></th>' +
+    '<th colspan="' + cnt.origa + '"><div style="background:' + FGRP.pre.bg + ';color:' + FGRP.pre.fg + '"' + tipAttr('Origa (AI agent): from Lead In until the lead is qualified (Stages 1–4)') + '>Origa</div></th>' +
+    '<th colspan="' + cnt.staff + '"><div style="background:' + FGRP.post.bg + ';color:' + FGRP.post.fg + '"' + tipAttr('Sales staff: from the lead being qualified to SPA signed (Stages 4–11)') + '>Sales staff</div></th></tr>' +
+    '<tr><th rowspan="2" class="nmh">Business unit</th>' + COLS.map(function (c) { return '<th colspan="' + c.sub.length + '" class="gl"><div class="th2"><span' + tipAttr(c.tip) + '>' + c.h + '</span></div></th>'; }).join('') + '</tr>' +
+    '<tr class="unit">' + COLS.map(function (c) { return c.sub.map(function (s, i) { return '<th class="' + (i ? '' : 'gl') + '">' + s[0] + '</th>'; }).join(''); }).join('') + '</tr></thead>';
+  /* colour scale for % columns: each column is scaled across the business units shown (total row is left plain) */
+  COLS.forEach(function (c) { c.sub.forEach(function (sb) {
+    if (!sb[3]) return;
+    var vals = rows.map(function (r) { return sb[3](r); }).filter(function (v) { return v != null; });
+    sb.lo = Math.min.apply(null, vals); sb.hi = Math.max.apply(null, vals);
+  }); });
+  function heat(sb, r) {
+    if (!sb[3] || r.tot || rows.length < 2) return '';
+    var v = sb[3](r); if (v == null || !(sb.hi - sb.lo >= .02)) return '';   // no shading when the BUs are within 2 points of each other
+    var t = (v - sb.lo) / (sb.hi - sb.lo), score = sb[4] ? t : 1 - t, k = Math.abs(score - .5) * 2;
+    return ' style="background:' + (score >= .5 ? 'rgba(22,163,74,' : 'rgba(220,38,38,') + (k * .17).toFixed(3) + ')"';
+  }
+  function rowHTML(r) {
+    return '<tr' + (r.tot ? ' class="total"' : '') + '><td class="nm">' + r.name + '</td>' +
+      COLS.map(function (c) { return c.sub.map(function (sb, i) { return '<td class="' + (i ? '' : 'gl') + (sb[3] ? ' hm' : '') + '"' + heat(sb, r) + '>' + dz(sb[1](r)) + '</td>'; }).join(''); }).join('') + '</tr>';
+  }
+  var body = '<div class="tscroll"><table class="tbl spd">' + cg + head + '<tbody>' +
+    rows.map(rowHTML).join('') + (rows.length > 1 ? rowHTML(tot) : '') + '</tbody></table></div>';
+  return section('speed', 'Speed-to-Lead & Aging Metrics & Bottom-of-Funnel Conversion by Business Unit', winLabel(W.ev) + (W.ref ? ' <span class="vs">vs</span> ' + winLabel(W.ref) : ''), '', body, true);
+}
+
+/* ============================================================
+   BU Admin — Lead-level journey (By lead / By sales rep toggle)
+   ============================================================ */
+var LCOLS = [{ k: 'lead', h: 'Lead', fixed: true }, { k: 'rep', h: 'Sales rep' }, { k: 'src', h: 'Deal source' }]
+  .concat(STAGES.map(function (st, s) { return { k: 's' + s, h: st.name, s: s }; }))
+  .concat([{ k: 'price', h: 'SPA Price' }, { k: 'total', h: 'Total time' }]);
+/* each stage cell: when the lead entered it, and how long it spent there */
+function stageCell(L, s) {
+  var t = L.ts[s];
+  if (t != null) {
+    var chip = '';
+    if (s < 10) {
+      if (L.ts[s + 1] != null) chip = '<span class="chip xs"' + tipAttr('Time spent in this stage') + '>' + fDur((L.ts[s + 1] - t) / MIN) + '</span>';
+      else if (!L.lostAt) chip = '<span class="chip xs now"' + tipAttr('Still in this stage') + '>' + fDur((NOW - t) / MIN) + '</span>';
+      else chip = '<span class="chip xs"' + tipAttr('Time in this stage before it was closed as lost') + '>' + fDur((L.lostAt - t) / MIN) + '</span>';
+    }
+    return '<div class="c2"><span class="ts1"' + tipAttr(fDY(t) + ', ' + fT(t)) + '>' + fD(t) + '</span><span class="ts2">' + chip + '</span></div>';
+  }
+  if (L.lostAt) return s === L.f + 1 ? '<span class="drop"' + tipAttr('Closed-lost on ' + fDY(L.lostAt) + ' after no progress from ' + STAGES[L.f].name) + '>Dropped</span>' : '<span class="mut">—</span>';
+  return '<span class="pend">Pending</span>';
+}
+function leadStatus(L) {
+  if (L.f === 10) return 'Won · SPA signed';
+  if (L.f === 9) return 'Won · SPA pending';
+  if (L.lostAt) return 'Lost';
+  if (L.f === 8) return 'Open · reserved';
+  if (L.f === 3 || L.f === 4) return 'Open · awaiting outreach';
+  if (L.f <= 2) return 'Open · with Origa';
+  return 'Open';
+}
+function leadTotal(L) {
+  var end = L.f === 10 ? L.ts[10] : (L.lostAt || NOW);
+  return (end - L.ts[0]) / MIN;
+}
+function priceCell(L) {
+  if (!L.spa && !L.mh) return '<span class="mut">—</span>';
+  return '<div class="c2"><span class="lock"' + tipAttr('SPA price pushed from Mhub. Locked in OutPerform; it can only be changed in Mhub.') + '><b style="color:var(--pri-dd)">' + (L.spa ? fRM(L.spa) : '—') + '</b>' + ICON.lock + '</span>' +
+    (L.mh ? '<a class="mhlink" href="https://www.mhub.my/" target="_blank" rel="noopener"' + tipAttr('Open deal ' + L.mh + ' in Mhub') + '>' + L.mh + ICON.ext + '</a>' : '') + '</div>';
+}
+function journeyList() {
+  var F = state.f.journey, list = leadsIn(rangeWin(F), F);
+  var f = {
+    old: function (a, b) { return a.ts[0] - b.ts[0]; },
+    far: function (a, b) { return (b.f - a.f) || (b.ts[0] - a.ts[0]); },
+    long: function (a, b) { return leadTotal(b) - leadTotal(a); },
+    price: function (a, b) { return ((b.spa || 0) - (a.spa || 0)) || (b.ts[0] - a.ts[0]); }
+  }[F.sort];
+  if (f) list.sort(f);
+  return list;
+}
+var JEXP = '<button class="btn-sm" data-act="jexport"' + tipAttr('Download this table as a CSV, with the filters and visible columns shown here') + '><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34334F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 21h16"></path></svg>Export</button>';
+/* export exactly what the Lead-level journey shows (filters, sort, visible columns) */
+function exportJourney() {
+  var F = state.f.journey, rows;
+  if (state.jmode === 'lead') {
+    var list = journeyList(), cols = LCOLS.filter(function (c) { return !state.hidden[c.k]; });
+    var head = [];
+    cols.forEach(function (c) {
+      if (c.k === 'lead') head.push('lead_id', 'lead_name', 'phone');
+      else if (c.k === 'rep') head.push('sales_rep', 'business_unit');
+      else if (c.k === 'src') head.push('deal_source');
+      else if (c.k === 'price') head.push('spa_price_rm', 'mhub_deal_id');
+      else if (c.k === 'total') head.push('total_time_mins', 'status');
+      else head.push(STAGES[c.s].key + '_at', STAGES[c.s].key + '_time_in_stage_mins');
+    });
+    rows = [head];
+    list.forEach(function (L) {
+      var r = [];
+      cols.forEach(function (c) {
+        if (c.k === 'lead') r.push(L.id, L.name, L.phoneMasked);
+        else if (c.k === 'rep') r.push(L.rep ? REP[L.rep].name : '', BU[L.bu].name);
+        else if (c.k === 'src') r.push(L.src);
+        else if (c.k === 'price') r.push(L.spa || '', L.mh || '');
+        else if (c.k === 'total') r.push(Math.round(leadTotal(L)), leadStatus(L));
+        else {
+          var t = L.ts[c.s], nx = c.s < 10 ? L.ts[c.s + 1] : null;
+          var d = t == null || c.s >= 10 ? '' : Math.round(((nx != null ? nx : (L.lostAt || NOW)) - t) / MIN);
+          r.push(tsFmt(t), d);
+        }
+      });
+      rows.push(r);
+    });
+  } else {
+    var Fr = Object.assign({}, F, { status: null, stage: null, q: '' });
+    var list2 = leadsIn(rangeWin(Fr), Fr, { repOnly: true }), bus = effBUs(Fr), isCur = Fr.count === 'current';
+    var reps = REPS.filter(function (r) { return inSel(Fr.rep, r.id) && r.bus.some(function (b) { return bus.indexOf(b) >= 0; }); });
+    var head2 = ['sales_rep', 'business_unit', 'new_leads'];
+    [3, 4, 5, 6, 7, 8, 9, 10].forEach(function (s) { head2.push(STAGES[s].key + (isCur ? '_current' : '_reached')); if (s < 10) head2.push(STAGES[s].key + '_' + CS + '_time_in_stage_mins'); });
+    head2.push('sold_spa_price_rm', 'spa_signed_spa_price_rm');
+    rows = [head2];
+    reps.forEach(function (r) {
+      var ls = list2.filter(function (L) { return L.rep === r.id; }), c = compute(ls, NOW, 3);
+      var row = [r.name, r.bus.map(function (b) { return BU[b].name; }).join(' / '), c.base];
+      [3, 4, 5, 6, 7, 8, 9, 10].forEach(function (s) { row.push(isCur ? c.C[s] : c.R[s]); if (s < 10) { var v = stat(c.times[s]); row.push(v == null ? '' : Math.round(v)); } });
+      row.push(c.soldVal, c.spaVal);
+      rows.push(row);
+    });
+  }
+  if (rows.length < 2) { toast('Nothing to export with these filters'); return; }
+  downloadCSV(rows, 'outperform_lead_level_journey_' + (state.jmode === 'lead' ? 'by_lead_' : 'by_sales_rep_') + ymd(NOW).replace(/-/g, '') + '.csv');
+  toast('Exported ' + fN(rows.length - 1) + (state.jmode === 'lead' ? ' leads' : ' sales reps') + ' to CSV');
+}
+/* first three columns (Lead, Sales rep, Deal source) stay frozen when the table scrolls sideways */
+var FZW = { lead: 118, rep: 112, src: 104 };
+function fzAttr(cols, c) {
+  if (!FZW[c.k]) return '';
+  var left = 0;
+  for (var i = 0; i < cols.length && cols[i].k !== c.k; i++) if (FZW[cols[i].k]) left += FZW[cols[i].k];
+  var last = !cols.some(function (x, j) { return j > cols.indexOf(c) && FZW[x.k]; });
+  return ' class="fz' + (last ? ' fzl' : '') + '" style="left:' + left + 'px;min-width:' + FZW[c.k] + 'px;max-width:' + FZW[c.k] + 'px"';
+}
+function journeySection() {
+  var modeSeg = segBtns('jmode', [['lead', 'By lead'], ['rep', 'By sales rep']], state.jmode);
+  return state.jmode === 'rep' ? repJourney(modeSeg) : leadJourney(modeSeg);
+}
+function leadJourney(modeSeg) {
+  var F = state.f.journey;
+  var list = journeyList(), agg = compute(list, NOW, 0);
+  var pages = Math.max(1, Math.ceil(list.length / PAGE)); if (state.page > pages) state.page = pages;
+  var slice = list.slice((state.page - 1) * PAGE, state.page * PAGE);
+  var cols = LCOLS.filter(function (c) { return !state.hidden[c.k]; });
+  var hiddenN = LCOLS.length - cols.length;
+  var nPre = 0, nPost = 0, lead3 = 0, tail = 0;
+  cols.forEach(function (c) { if (c.s != null) { if (c.s < 3) nPre++; else nPost++; } else if (c.k === 'price' || c.k === 'total') tail++; else lead3++; });
+  var gh = grpRow([[lead3, null], [nPre, 'pre'], [nPost, 'post'], [tail, null]]);
+  var h = '<tr>' + cols.map(function (c, i) {
+    var label = c.s != null ? stageHeadTip(c.s) :
+      c.h;
+    return '<th' + fzAttr(cols, c) + '><div class="hc">' + label +
+      (c.fixed ? '' : '<button class="hide-btn" data-act="hidecol" data-col="' + c.k + '" aria-label="Hide column ' + esc(c.h) + '"' + tipAttr('Hide this column') + '>' + ICON.eyeoff + '</button>') + '</div></th>';
+  }).join('') + '</tr>';
+  /* summary row: average / median time in each stage across all leads in the filter */
+  var avgRow = '<tr class="avgrow">' + cols.map(function (c, i) {
+    if (c.k === 'lead') return '<td' + fzAttr(cols, c) + '><b>Average</b> <span class="mut">· ' + fN(list.length) + ' leads</span></td>';
+    if (FZW[c.k]) return '<td' + fzAttr(cols, c) + '></td>';
+    if (c.s != null) return '<td>' + (c.s < 10 ? '<span class="chip xs"' + tipAttr(timeTip()) + '>' + tis(agg, c.s) + '</span>' : '') + '</td>';
+    if (c.k === 'total') { var tt = list.map(leadTotal); return '<td style="padding-right:20px"><span class="num">' + fDur(stat(tt)) + '</span></td>'; }
+    return '<td></td>';
+  }).join('') + '</tr>';
+  var body = slice.map(function (L) {
+    return '<tr>' + cols.map(function (c) {
+      switch (c.k) {
+        case 'lead': return '<td' + fzAttr(cols, c) + '><div class="c2"><b>' + L.name + '</b><span class="ts2 num">' + L.phoneMasked + '</span></div></td>';
+        case 'rep':
+          var r = L.rep ? REP[L.rep] : null;
+          return '<td' + fzAttr(cols, c) + '><div class="who"><span class="av sm"' + (r ? '' : ' style="background:#F1F0F6;color:#8A89A3"') + '>' + (r ? r.id : '–') + '</span>' + (isAdmin() ? '<span>' + (r ? r.name : 'Unassigned') + '</span>' : '<span class="c2"><span>' + (r ? r.name : 'Unassigned') + '</span><span class="ts2 mut" style="font-weight:500">' + BU[L.bu].name + '</span></span>') + '</div></td>';
+        case 'src': return '<td' + fzAttr(cols, c) + '><div class="c2"><span style="color:var(--ink2)">' + L.src + '</span><span class="ts2 mut">' + L.cat + '</span></div></td>';
+        case 'price': return '<td>' + priceCell(L) + '</td>';
+        case 'total': return '<td style="padding-right:20px"><div class="c2"><b class="num" style="font-weight:600">' + fDur(leadTotal(L)) + '</b><span class="ts2 mut">' + leadStatus(L) + '</span></div></td>';
+        default: return '<td>' + stageCell(L, c.s) + '</td>';
+      }
+    }).join('') + '</tr>';
+  }).join('');
+  var panel = state.colPanel ? '<div class="colpanel"><div class="cp-h"><span class="lbl">Show columns</span><button class="btn-link" style="height:24px;padding:0" data-act="showall">Show all</button></div>' +
+    LCOLS.map(function (c) { return '<label><input type="checkbox" data-act="togglecol" data-col="' + c.k + '"' + (state.hidden[c.k] ? '' : ' checked') + (c.fixed ? ' disabled' : '') + '>' + c.h + '</label>'; }).join('') + '</div>' : '';
+  var ctrl = modeSeg + JEXP + '<div class="colpanel-wrap"><button class="btn-sm" data-act="colpanel">' + ICON.cols + 'Columns' + (hiddenN ? ' · ' + hiddenN + ' hidden' : '') + '</button>' + panel + '</div>';
+  var tbl = '<div class="tscroll"><table class="tbl cmp ljt"><thead>' + gh + h + '</thead><tbody>' +
+    (slice.length ? avgRow + body : '<tr><td colspan="' + cols.length + '" class="empty">No leads match these filters</td></tr>') + '</tbody></table></div>' +
+    '<div class="pager"><span class="sub">Showing ' + (list.length ? fN((state.page - 1) * PAGE + 1) + '–' + fN(Math.min(list.length, state.page * PAGE)) : 0) + ' of ' + fN(list.length) + ' leads · chip = time spent in stage</span>' +
+    '<div class="pg"><button class="pgbtn" data-act="page" data-v="-1" aria-label="Previous page"' + (state.page <= 1 ? ' disabled' : '') + '>' + ICON.prev + '</button><span>Page ' + fN(state.page) + ' of ' + fN(pages) + '</span>' +
+    '<button class="pgbtn" data-act="page" data-v="1" aria-label="Next page"' + (state.page >= pages ? ' disabled' : '') + '>' + ICON.next + '</button></div></div>';
+  return section('journey', 'Lead-level journey', '', ctrl, tbl, true);
+}
+function repJourney(modeSeg) {
+  var F = Object.assign({}, state.f.journey, { status: null, stage: null, q: '' });
+  var w = rangeWin(F), list = leadsIn(w, F, { repOnly: true }), bus = effBUs(F);
+  var by = {}; REPS.forEach(function (r) { by[r.id] = []; });
+  list.forEach(function (L) { by[L.rep].push(L); });
+  var rows = REPS.filter(function (r) { return inSel(F.rep, r.id) && r.bus.some(function (b) { return bus.indexOf(b) >= 0; }); })
+    .map(function (r) { return { r: r, leads: by[r.id], c: compute(by[r.id], NOW, 3) }; });
+  var sorters = {
+    new: function (a, b) { return b.c.base - a.c.base; },
+    sold: function (a, b) { return b.c.soldVal - a.c.soldVal; },
+    view: function (a, b) { return (stat(a.c.times[3]) || 1e12) - (stat(b.c.times[3]) || 1e12); },
+    contact: function (a, b) { return (stat(a.c.times[4]) || 1e12) - (stat(b.c.times[4]) || 1e12); }
+  };
+  rows.sort(sorters[F.repsort] || sorters.new);
+  var isCur = F.count === 'current';
+  var stIdx = [3, 4, 5, 6, 7, 8, 9, 10];
+  var head = '<thead>' + grpRow([[1, null], [stIdx.length, 'post'], [1, null]]) + '<tr>' +
+    '<th style="padding-left:20px">Sales rep / Lead</th>' + stIdx.map(function (s) { return '<th>' + stageHeadTip(s) + '</th>'; }).join('') +
+    '<th style="padding-right:20px"><span' + tipAttr(statWord() + ' time from New to Sold') + '>' + statLabel() + ' New → Sold<i class="i">i</i></span></th></tr></thead>';
+  var inRows = {}; rows.forEach(function (x) { inRows[x.r.id] = 1; });
+  var tot = compute(list.filter(function (L) { return inRows[L.rep]; }), NOW, 3);
+  function cell(c, s, base) {
+    var n = isCur ? c.C[s] : c.R[s];
+    var l1 = '<b>' + fN(n) + '</b>' + (s >= 9 ? ' <span class="val">· ' + fRM(s === 9 ? c.soldVal : c.spaVal) + '</span>' : '');
+    var l2 = (s >= 8 ? pct(c.R[s], base) + ' of New' : '') + (s < 10 ? (s >= 8 ? ' · ' : '') + tis(c, s) : '');
+    return '<td><div class="c2"><span>' + l1 + '</span><span class="ts2 num">' + (l2 || '&nbsp;') + '</span></div></td>';
+  }
+  var body = rows.map(function (x) {
+    var r = x.r, c = x.c, open = state.expRep === r.id;
+    var cyc = []; x.leads.forEach(function (L) { if (L.ts[9] != null) cyc.push((L.ts[9] - L.ts[3]) / MIN); });
+    var h = '<tr class="' + (open ? 'sel' : '') + '"><td style="padding-left:12px"><button class="repbtn" data-act="exp" data-v="' + r.id + '" aria-expanded="' + open + '"><span class="caret">' + (open ? ICON.down : ICON.right) + '</span><span class="av sm">' + r.id + '</span><span class="c2"><b>' + r.name + '</b><span class="ts2 mut">' + (isAdmin() ? '' : BU[r.bus[0]].name + ' · ') + fN(c.base) + ' New leads</span></span></button></td>' +
+      stIdx.map(function (s) { return cell(c, s, c.base); }).join('') +
+      '<td class="num" style="padding-right:20px">' + fDur(stat(cyc)) + '</td></tr>';
+    if (open) {
+      h += x.leads.slice(0, 5).map(function (L) {
+        return '<tr class="sub"><td style="padding-left:50px"><div class="c2"><b>' + L.name + '</b><span class="ts2 num">' + L.phoneMasked + ' · ' + L.src + '</span></div></td>' +
+          stIdx.map(function (s) { return '<td>' + stageCell(L, s) + '</td>'; }).join('') +
+          '<td style="padding-right:20px"><div class="c2"><b class="num" style="font-weight:600">' + fDur(leadTotal(L)) + '</b><span class="ts2 mut">' + leadStatus(L) + '</span></div></td></tr>';
+      }).join('') +
+        '<tr class="sub"><td colspan="10" style="padding:8px 20px 8px 50px"><div style="display:flex;justify-content:space-between;align-items:center"><span class="sub">Showing ' + Math.min(5, x.leads.length) + ' of ' + fN(x.leads.length) + ' leads for ' + r.name + '</span><a href="#" data-act="openrep" data-v="' + r.id + '" style="font-size:12.5px;font-weight:700">See all of ' + r.name + '\'s leads</a></div></td></tr>';
+    }
+    return h;
+  }).join('');
+  var cycT = []; list.forEach(function (L) { if (inRows[L.rep] && L.ts[9] != null) cycT.push((L.ts[9] - L.ts[3]) / MIN); });
+  var total = '<tr class="total"><td style="padding-left:20px">Team total · ' + rows.length + ' reps</td>' +
+    stIdx.map(function (s) { return cell(tot, s, tot.base); }).join('') +
+    '<td class="num" style="padding-right:20px">' + fDur(stat(cycT)) + '</td></tr>';
+  var ctrl = modeSeg + JEXP + '<button class="btn-sm" data-act="collapse-reps">Collapse all</button>';
+  var tbl = '<div class="tscroll"><table class="tbl cmp">' + head + '<tbody>' + (rows.length ? body + total : '<tr><td colspan="10" class="empty">No sales reps match the filters</td></tr>') + '</tbody></table></div>';
+  return section('journey', 'Lead-level journey', '', ctrl, tbl, true);
+}
+
+/* ============================================================
+   Innovation Team — breakdown by business unit
+   ============================================================ */
+function buSection() {
+  var F = state.f.bubreak;
+  var W = tfWins(F), list = leadsIn(W.ev, F), refList = W.ref ? leadsIn(W.ref, F) : null, isCur = F.count === 'current', sel = effBUs(F);
+  var bus = BUS.filter(function (b) { return sel.indexOf(b.id) >= 0; });
+  var rows = bus.map(function (b) {
+    var ls = list.filter(function (L) { return L.bu === b.id; });
+    return { name: b.name, leads: ls, c: compute(ls, W.ev[1], 0), p: refList ? compute(refList.filter(function (L) { return L.bu === b.id; }), W.ref[1], 0) : null };
+  });
+  if (rows.length > 1) rows.push({ name: bus.length === BUS.length ? 'HQ total' : 'Total', leads: list, c: compute(list, W.ev[1], 0), p: refList ? compute(refList, W.ref[1], 0) : null, tot: true });
+  var head = '<thead>' + grpRow([[1, null], [3, 'pre'], [8, 'post'], [1, null]]) + '<tr><th class="bnm">Business unit</th>' +
+    STAGES.map(function (_, s) { return '<th>' + stageHeadTip(s) + '</th>'; }).join('') +
+    '<th class="bcy"><span' + tipAttr('Average time from Lead In to Sold, and from Lead In to SPA Signed') + '>Avg cycle time<i class="i">i</i></span></th></tr></thead>';
+  var body = rows.map(function (x) {
+    var c = x.c, p = x.p;
+    var cyc1 = [], cyc2 = []; x.leads.forEach(function (L) { if (L.ts[9] != null) cyc1.push((L.ts[9] - L.ts[0]) / MIN); if (L.ts[10] != null) cyc2.push((L.ts[10] - L.ts[0]) / MIN); });
+    return '<tr' + (x.tot ? ' class="total"' : '') + '><td class="bnm">' + x.name + '</td>' +
+      STAGES.map(function (_, s) {
+        var n = isCur ? c.C[s] : c.R[s];
+        var h = '<span class="bn">' + fN(n) + '</span>';
+        if (p) h += '<span class="bd">' + incrS(n, isCur ? p.C[s] : p.R[s]) + '</span>';
+        if (!isCur && s) h += '<span class="bm"' + tipAttr('Share of leads that reached the previous stage') + '>' + pct(c.R[s], c.R[s - 1], 0) + ' of prev.</span>';
+        if (s < 10) h += '<span class="bm"' + tipAttr(timeTip()) + '>Avg ' + tis(c, s) + '</span>';
+        if (s >= 9) h += '<span class="bv"' + tipAttr('Sum of SPA prices from Mhub') + '>' + fRM(s === 9 ? c.soldVal : c.spaVal) + '</span>';
+        return '<td><div class="bc">' + h + '</div></td>';
+      }).join('') +
+      '<td class="bcy"><div class="bc"><span class="bm">To Sold <b>' + fDur(stat(cyc1)) + '</b></span><span class="bm">To SPA <b>' + fDur(stat(cyc2)) + '</b></span></div></td></tr>';
+  }).join('');
+  var cap = '<div class="rcap"><span><b>Evaluated period:</b> ' + winLabel(W.ev) + '</span><span><b>Referenced period:</b> ' +
+    (W.ref ? winLabel(W.ref) : '<span class="mut">not set. Pick a Referenced End Date above to show increments</span>') + '</span>' +
+    '<span class="mut">' + (isCur ? 'Current funnel: open leads in each stage right now' : 'Conversion funnel: leads that reached each stage') + '</span></div>';
+  var tbl = cap + '<div class="tscroll"><table class="tbl bub2">' + head + '<tbody>' + body + '</tbody></table></div>';
+  return section('bubreak', 'Breakdown by business unit', '', '', tbl, true);
+}
+
+/* ============================================================
+   Render
+   ============================================================ */
+function render() {
+  var admin = isAdmin(), y = window.scrollY;
+  document.getElementById('crumb').textContent = admin ? 'BU Admin' : 'Innovation Team';
+  document.getElementById('scope').textContent = admin ? BU[ADMIN_BU].name : 'HQ · All business units';
+  document.querySelectorAll('#tabs a').forEach(function (a) { var on = a.dataset.tab === state.tab; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  var html = funnelSection() + trendSection();
+  html += admin ? journeySection() : speedSection() + buSection() + journeySection();
+  document.getElementById('view').innerHTML = html;
+  document.querySelectorAll('#view [data-ind]').forEach(function (i) { i.indeterminate = true; });
+  window.scrollTo(0, y);   // re-drawing never moves the screen
+}
+
+/* ============================================================
+   Export raw data — its own filters (all multi-select), real CSV download
+   ============================================================ */
+function tsFmt(ms) {
+  if (ms == null) return '';
+  var p = P(ms);
+  if (state.exp.ts === 'utc') return new Date(ms).toISOString().replace('.000', '');
+  if (state.exp.ts === 'dmy') return pad(p.d) + '/' + pad(p.mo + 1) + '/' + p.y + ' ' + pad(p.h) + ':' + pad(p.mi);
+  return p.y + '-' + pad(p.mo + 1) + '-' + pad(p.d) + 'T' + pad(p.h) + ':' + pad(p.mi) + ':00+08:00';
+}
+function exportList() { var E = state.exp.f; return leadsIn(rangeWin(E), E); }
+function buildCSV() {
+  var rows = [['lead_id', 'lead_name', 'phone', 'sales_rep', 'business_unit', 'deal_source', 'status', 'current_stage']
+    .concat(STAGES.map(function (s) { return s.key + '_at'; })).concat(['spa_price_rm', 'mhub_deal_id', 'mhub_url', 'total_cycle_mins'])];
+  exportList().forEach(function (L) {
+    rows.push([L.id, L.name, state.exp.mask ? L.phoneMasked : L.phone, L.rep ? REP[L.rep].name : '', BU[L.bu].name, L.src, leadStatus(L), STAGES[L.f].name]
+      .concat(L.ts.map(tsFmt)).concat([L.spa || '', L.mh || '', L.mh ? 'https://www.mhub.my/' : '', Math.round(leadTotal(L))]));
+  });
+  return rows;
+}
+function csvText(rows) { return rows.map(function (r) { return r.map(function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','); }).join('\r\n'); }
+function renderModal() {
+  var E = state.exp.f, a = 'data-sf="exp"', n = exportList().length;
+  var stageCtl = msCtl('exp', 'stage').replace('>Furthest stage<', '>Stages<');
+  document.getElementById('modal').innerHTML =
+    '<div class="mh-h"><h2 id="export-title">Export raw data</h2>' +
+    '<button class="iconbtn" style="width:36px;height:36px;border:0;background:#F4F4F8" data-act="export-close" aria-label="Close">' + ICON.close + '</button></div>' +
+    '<div class="mbody"><div class="xgrid">' + rangeCtl(a, E) + (isAdmin() ? '' : msCtl('exp', 'bu')) + msCtl('exp', 'rep') + msCtl('exp', 'src') + msCtl('exp', 'status') + stageCtl +
+    fl('Timestamps', '<select data-x="ts">' + opt('iso', 'ISO 8601, MYT', state.exp.ts) + opt('dmy', 'DD/MM/YYYY HH:mm', state.exp.ts) + opt('utc', 'UTC', state.exp.ts) + '</select>') + '</div>' +
+    '<label class="mask"><input type="checkbox" data-x="mask"' + (state.exp.mask ? ' checked' : '') + '><span><span style="font-weight:700">Mask phone numbers</span><span style="color:var(--muted)"> · for sharing outside the sales team (PDPA)</span></span></label></div>' +
+    '<div class="mfoot"><span class="sub"><b style="color:var(--ink)">' + fN(n) + '</b> leads match · CSV, opens in Excel</span><div style="display:flex;gap:10px"><button class="btn-sec" data-act="export-close">Cancel</button>' +
+    '<button class="btn-pri" data-act="export-go"' + (n ? '' : ' disabled style="opacity:.5;cursor:default"') + '><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 21h16"></path></svg>Export</button></div></div>';
+  document.querySelectorAll('#modal [data-ind]').forEach(function (i) { i.indeterminate = true; });
+}
+function modalOn() { return document.getElementById('modal').classList.contains('on'); }
+function openModal() { state.ms = null; renderModal(); document.getElementById('modal').classList.add('on'); document.getElementById('overlay').classList.add('on'); }
+function closeModal() { if (state.ms && state.ms.indexOf('exp:') === 0) state.ms = null; document.getElementById('modal').classList.remove('on'); document.getElementById('overlay').classList.remove('on'); }
+function downloadCSV(rows, name) {
+  var blob = new Blob(['﻿' + csvText(rows)], { type: 'text/csv;charset=utf-8' });
+  var url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+}
+function doExport() {
+  var rows = buildCSV();
+  if (rows.length < 2) { toast('No leads match these filters'); return; }
+  downloadCSV(rows, 'outperform_lead_journey_' + ymd(NOW).replace(/-/g, '') + '.csv');
+  closeModal(); toast('Exported ' + fN(rows.length - 1) + ' leads to CSV');
+}
+var toastT;
+function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(function () { t.style.display = 'none'; }, 2600); }
+
+/* ============================================================
+   Events
+   ============================================================ */
+function getF(sec) { return sec === 'exp' ? state.exp.f : state.f[sec]; }
+function redraw(sec) { if (sec === 'exp') renderModal(); else render(); }
+function pruneReps(F) {   // keep the rep selection valid for the business units in view
+  if (F.rep == null) return;
+  var bus = effBUs(F);
+  F.rep = F.rep.filter(function (id) { return REP[id] && REP[id].bus.some(function (b) { return bus.indexOf(b) >= 0; }); });
+  if (!F.rep.length) F.rep = null;
+}
+document.addEventListener('click', function (e) {
+  /* close an open multi-select when clicking outside it */
+  if (state.ms && !e.target.closest('.msw')) { var sec0 = state.ms.split(':')[0]; state.ms = null; redraw(sec0); if (!e.target.closest('[data-act]')) return; }
+  var el = e.target.closest('[data-act]');
+  if (!el) { if (state.colPanel && !e.target.closest('.colpanel')) { state.colPanel = false; render(); } return; }
+  var a = el.dataset.act, v = el.dataset.v;
+  if (a === 'togglecol') return; // handled on change
+  if (a !== 'colpanel' && state.colPanel && !el.closest('.colpanel')) state.colPanel = false;
+  switch (a) {
+    case 'ms': state.ms = state.ms === v ? null : v; redraw(v.split(':')[0]); return;
+    case 'scount': state.f[el.dataset.sec].count = v; break;
+    case 'fview': state.fview = v; break;
+    case 'jmode':
+      if (v !== state.jmode) { var sj = el.closest('section'); state.jminH = Math.max(state.jminH, sj ? sj.offsetHeight : 0); }
+      state.jmode = v; state.page = 1; break;
+    case 'freset': state.f[el.dataset.sec] = freshFor(el.dataset.sec); if (el.dataset.sec === 'journey') { state.page = 1; state.hidden = {}; } break;
+    case 'jexport': exportJourney(); return;
+    case 'min': var ck = state.tab + ':' + el.dataset.sec; state.collapsed[ck] = !state.collapsed[ck]; break;
+    case 'hidecol': state.hidden[el.dataset.col] = true; break;
+    case 'colpanel': state.colPanel = !state.colPanel; break;
+    case 'showall': state.hidden = {}; break;
+    case 'page': state.page += +v; break;
+    case 'exp': state.expRep = state.expRep === v ? null : v; break;
+    case 'collapse-reps': state.expRep = null; break;
+    case 'openrep': e.preventDefault(); state.f.journey.rep = [v]; state.jmode = 'lead'; state.page = 1; break;
+    case 'export-open': openModal(); return;
+    case 'export-close': closeModal(); return;
+    case 'export-go': if (!el.disabled) doExport(); return;
+    default: return;
+  }
+  render();
+});
+document.addEventListener('change', function (e) {
+  var t = e.target;
+  if (t.dataset.act === 'togglecol') { if (t.checked) delete state.hidden[t.dataset.col]; else state.hidden[t.dataset.col] = true; render(); return; }
+  if (t.dataset.ms) {
+    var parts = t.dataset.ms.split(':'), sec = parts[0], key = parts[1], F = getF(sec);
+    var all = msAll(key, F), cur = F[key] == null ? all.slice() : F[key].slice();
+    if (t.dataset.msall) cur = t.checked ? all.slice() : [];
+    else if (t.dataset.msg) {
+      var gv = t.dataset.msg.split('|').map(function (x) { return msValue(key, x); });
+      cur = cur.filter(function (x) { return gv.indexOf(x) < 0; });
+      if (t.checked) cur = cur.concat(gv);
+    } else {
+      var val = msValue(key, t.dataset.msv), i = cur.indexOf(val);
+      if (t.checked && i < 0) cur.push(val); if (!t.checked && i >= 0) cur.splice(i, 1);
+    }
+    msSet(sec, key, cur);
+    if (key === 'bu') pruneReps(F);
+    if (key === 'cat' && F.src) { F.src = F.src.filter(function (x) { return inSel(F.cat, SRCCAT[x]); }); if (!F.src.length) F.src = null; }
+    if (sec === 'journey') state.page = 1;
+    redraw(sec); return;
+  }
+  if (t.dataset.x) { if (t.dataset.x === 'mask') state.exp.mask = t.checked; else state.exp[t.dataset.x] = t.value; renderModal(); return; }
+  var sec2 = t.dataset.sf;
+  if (sec2) {
+    var k = t.dataset.k; if (k === 'q') return;
+    var F2 = getF(sec2);
+    if (t.type === 'date' && !t.value) {   // a cleared date is ignored, except the Referenced dates of the BU breakdown
+      if (sec2 === 'bubreak' && (k === 'refEnd' || k === 'refStart')) F2[k] = '';
+      redraw(sec2); return;
+    }
+    if (k === 'cmp' && t.value === 'flex' && F2.cmp !== 'flex') {   // carry the current windows into the 4 date fields
+      var Wd = tfWins(F2); F2.evStart = ymd(Wd.ev[0]); F2.refStart = Wd.ref ? ymd(Wd.ref[0]) : '';
+    }
+    F2[k] = t.value;
+    if (sec2 === 'journey') state.page = 1;
+    redraw(sec2);
+    return;
+  }
+  var f = t.dataset.f;
+  if (f === 's2from') { var p = state.s2[state.tab]; p[0] = +t.value; if (p[1] <= p[0]) p[1] = p[0] + 1; render(); return; }
+  if (f === 's2to') { state.s2[state.tab][1] = +t.value; render(); return; }
+});
+var qT;
+document.addEventListener('input', function (e) {
+  var t = e.target;
+  if (t.dataset.k !== 'q' || !t.dataset.sf) return;
+  clearTimeout(qT);
+  var v = t.value, sec = t.dataset.sf;
+  qT = setTimeout(function () {
+    state.f[sec].q = v; state.page = 1; render();
+    var inp = document.querySelector('[data-sf="' + sec + '"][data-k="q"]');
+    if (inp) { inp.focus({ preventScroll: true }); var n = inp.value.length; try { inp.setSelectionRange(n, n); } catch (_) {} }
+  }, 300);
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  if (state.ms) { var s0 = state.ms.split(':')[0]; state.ms = null; redraw(s0); return; }
+  closeModal();
+  if (state.colPanel) { state.colPanel = false; render(); }
+});
+
+/* tooltips */
+var tip = document.getElementById('tip'), tipEl = null;
+document.addEventListener('mouseover', function (e) {
+  var el = e.target.closest('[data-tip]');
+  if (el === tipEl) return; tipEl = el;
+  if (!el) { tip.style.display = 'none'; return; }
+  tip.textContent = el.getAttribute('data-tip'); tip.style.display = 'block'; placeTip(e);
+});
+document.addEventListener('mousemove', function (e) { if (tipEl) placeTip(e); });
+function placeTip(e) {
+  var r = tip.getBoundingClientRect(), x = e.clientX + 14, y = e.clientY + 16;
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - 12;
+  tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+}
+document.addEventListener('scroll', function () { tip.style.display = 'none'; tipEl = null; }, true);
+
+/* routing */
+function route() {
+  var h = (location.hash || '#admin').slice(1);
+  state.tab = h === 'innov' ? 'innov' : 'admin';
+  SECS.map(getF).concat([state.exp.f]).forEach(pruneReps);   // a BU Admin only sees their own BU's reps
+  state.colPanel = false; state.page = 1; state.ms = null; state.jminH = 0; closeModal();
+  render(); window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+route();
+})();
+
+</script>
+</body>
+</html>
